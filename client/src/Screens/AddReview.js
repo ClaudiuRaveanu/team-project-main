@@ -65,7 +65,7 @@ export default function AddReview() {
         <Grid container direction="column">
 
             <AppBar position='static' style={{background: '#757de8', marginTop: 'auto'}}>
-                <Toolbar gutterBottom>
+                <Toolbar gutterbottom="true">
                     <Paper style={paperStyle} elevation={0}>
                         <Button href="/" style={btnStyle}>Acasă</Button>
                         <Button href="/add-book" style={btnStyle}>Adaugă carte</Button>

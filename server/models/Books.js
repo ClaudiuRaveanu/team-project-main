@@ -14,4 +14,4 @@ const BookSchema = new mongoose.Schema({
     stock: {type: Number, required: true}
 });
 
-module.exports = mongoose.model('Carti',BookSchema);
+module.exports = mongoose.model('Books',BookSchema);

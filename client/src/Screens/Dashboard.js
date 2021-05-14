@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
-import {Grid, Typography, Paper, Toolbar, AppBar, Link } from '@material-ui/core';
+import {Grid, Typography, Paper, Toolbar, AppBar, Link, List, ListItem } from '@material-ui/core';
 // import { getCurrentDate } from '../App';
 // import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -12,6 +12,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
 import IconButton from '@material-ui/core/IconButton';
+import axios from 'axios';
 
 export default function Dashboard() {
 
@@ -49,11 +50,24 @@ export default function Dashboard() {
     });
 
     const classes = useStyles();
+
+    const url = 'http://localhost:3000/books';
+
+    var random = Math.floor(Math.random() * 5);
+
+    const [data,setData] = useState([]);
+    useEffect(() => {
+        axios.get(url).then( (res) => { 
+            setData(res.data[random])
+        }).catch( (e) => console.log(e) )
+    },[])
+
+    const preventDefault = (event) => event.preventDefault();
   
     return (
         <Grid>
             <AppBar position='static' style={{background: '#757de8', marginTop: 'auto', justifyContent:'center', flexDirection:'column', textAlign:'center'}}>
-                <Toolbar gutterBottom>
+                <Toolbar gutterbottom="true">
                     <Paper style={paperStyle} elevation={0}>
                         <Button style={btnStyle} href="/reserve">Rezervă o carte</Button>
                         <Button href="/wishlist" style={btnStyle}>Wishlist</Button>
@@ -78,16 +92,17 @@ export default function Dashboard() {
 
                             <Grid align="center" style={{ width:'100%', marginBottom:0 }}>
                                 <Paper elevation={3} style={{padding:'5px 5px'}}><Typography>Sugestia săptămânii</Typography></Paper>
-                                
-                                <Card className={classes.root}>
+                                <List>
+                                    <ListItem>
+                                <Card className={classes.root} key={data._id}>
                                     <CardActionArea>
-                                        <CardMedia className={classes.media} image="https://i.imgur.com/SEFPE3T.jpg" title="Extraterestrii"></CardMedia>
+                                        <CardMedia className={classes.media} image={data.cover} title={data.title}></CardMedia>
                                     <CardContent>
                                         <Typography gutterBottom variant="body1" component="h2" noWrap>
-                                            Extraterestrii
+                                            {data.title}
                                         </Typography>
                                         <Typography noWrap variant="body2" color="textSecondary" component="p" style={{ marginBottom:'0px' }}>
-                                            Există extratereștri? Dacă ar exista, cum ar arăta? Cum ar înțelege ei lumea? Ce ar însemna să intrăm în contact cu ei?
+                                            {data.description}
                                         </Typography>
                                     </CardContent>
                                     </CardActionArea>
@@ -98,6 +113,9 @@ export default function Dashboard() {
                                             </IconButton>
                                     </CardActions>
                                 </Card>
+                                
+                                    </ListItem>
+                                </List>
                             </Grid>
                         </Paper>
                         </form>

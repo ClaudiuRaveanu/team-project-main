@@ -52,7 +52,7 @@ export default function ViewWishlist() {
 
             <Grid container direction="row" justify="space-evenly">
             <AppBar position='static' style={{background: '#757de8', marginTop: 'auto'}}>
-                <Toolbar gutterBottom>
+                <Toolbar gutterbottom="true">
                     <Paper style={paperStyle} elevation={0}>
                         <Button href="/" style={btnStyle}>Acasă</Button>
                         <Button href="/books" style={btnStyle}>Cărți</Button>

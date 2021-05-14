@@ -3,13 +3,15 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
     username: {
         type: String,
-        unique: true
+        unique: true,
+        required: true
     },
-    password: String,
+    password: {type: String, required: true},
     isAdmin: {
         type: Boolean,
-        default: false
+        default: false,
+        required: true
     }
 });
 
-module.exports = mongoose.model('Users',UserSchema);
+module.exports = mongoose.model('users',UserSchema);

@@ -24,8 +24,9 @@
     "react": "^17.0.2",
     "react-calendar": "^3.3.1",
     "react-dom": "^17.0.2",
+    "react-native": "^0.64.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^4.0.3",
     "simple-react-calendar": "^2.2.8",
     "web-vitals": "^1.1.1",
     "yup": "^0.32.9"

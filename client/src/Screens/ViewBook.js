@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {Grid, Typography, Paper, Toolbar, AppBar, TextField } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -8,6 +8,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Icon from '@material-ui/core/Icon';
+import { useLocation , useHistory} from 'react-router-dom';
 
 export default function ViewBook() {
 
@@ -47,13 +48,31 @@ export default function ViewBook() {
         },
     }));
 
+    const location = useLocation();
+    const history = useHistory();
+    const data =  location.state?.data;
+
     const classes = useStyles();
+
+    const [book,setBook] = useState({
+        title: data.title,
+        author:data.author,
+        editure:data.editure,
+        description:data.description,
+        genre:data.genre,
+        cover:data.cover,
+        avg_grade:data.avg_grade,
+        pages:data.pages,
+        reviews:data.reviews,
+        publish_date:data.publish_date,
+        stock:data.stock
+    });
 
     return (
         <Grid container direction="column">
 
             <AppBar position='static' style={{background: '#757de8', marginTop: 'auto'}}>
-                <Toolbar gutterBottom>
+                <Toolbar gutterbottom="true">
                     <Paper style={paperStyle} elevation={0}>
                         <Button href="/" style={btnStyle}>Acasă</Button>
                         <Button href="/wishlist" style={btnStyle}>Wishlist</Button>
@@ -68,19 +87,34 @@ export default function ViewBook() {
                     <Paper elevation={0} style={{padding: '0px 0px', width: 'auto', margin: '0px auto', textAlign: 'center', background: 'transparent', display: 'flex'}}>
 
                         <Paper style={paper3} elevation={0}>
-                        <Grid align="left" style={{ marginBottom:30, width:'125%', flexDirection:'row', display:'flex' }}>
+                        <Grid align="left" style={{ marginBottom:30, width:'130%', flexDirection:'row', display:'flex' }}>
                             <TextField label='Titlu' inputProps={{ readOnly:true, }}
-                            variant='outlined' style={{ width:'100%'}} defaultValue="Platon"></TextField>
+                            value={book.title}
+                            onChange={(e) => setBook({ ...book, title: e.target.value})}
+                            variant='outlined' style={{ width:'100%'}}>{data.title}</TextField>
                             <TextField label='Număr pagini' display='inline' inputProps={{ readOnly:true, }} 
-                            variant='outlined' style={{ marginTop:0, marginLeft:30, width:'25%'}} ></TextField>
+                            variant='outlined' style={{ marginTop:0, marginLeft:30, width:'30%'}}
+                            value={book.pages}
+                            onChange={(e) => setBook({ ...book, pages: e.target.value})}>{data.pages}</TextField>
                         </Grid>
-                        <Grid align="left" style={{ marginBottom:30, flexDirection:'row', display:'flex', width:'125%' }}>
-                            <TextField label='Autor' variant='outlined' style={{ width:'50%' }} inputProps={{ readOnly:true, }}></TextField>
-                            <TextField label='Gen' variant='outlined' style={{ marginLeft:30, width:'35%'}} inputProps={{ readOnly:true, }}></TextField>
-                            <TextField label='An publicare' variant='outlined' style={{ marginLeft:30, width:'20%'}} inputProps={{ readOnly:true, }}></TextField>
+                        <Grid align="left" style={{ marginBottom:30, flexDirection:'row', display:'flex', width:'130%' }}>
+                            <TextField label='Autor' variant='outlined' style={{ width:'70%' }} inputProps={{ readOnly:true, }}
+                            value={book.author}
+                            onChange={(e) => setBook({ ...book, author: e.target.value})}>{data.author}</TextField>
+                            <TextField label='Editură' variant='outlined' style={{ marginLeft:30, width:'60%' }} inputProps={{ readOnly:true, }}
+                            value={book.editure}
+                            onChange={(e) => setBook({ ...book, editure: e.target.value})}>{data.editure}</TextField>
                         </Grid>
-                        <Grid align="left" style={{ marginBottom:0, width:'125%', textAlign:'justify' }}>
-                        <TextField
+                        <Grid align="left" style={{ marginBottom:30, flexDirection:'row', display:'flex', width:'130%' }}>
+                            <TextField label='Gen' variant='outlined' style={{ marginLeft:0, width:'75%'}} inputProps={{ readOnly:true, }}
+                            value={book.genre}
+                            onChange={(e) => setBook({ ...book, genre: e.target.value})}>{data.genre}</TextField>
+                            <TextField label='An publicare' variant='outlined' style={{ marginLeft:30, width:'30%'}} inputProps={{ readOnly:true, }}
+                            value={book.publish_date}
+                            onChange={(e) => setBook({ ...book, publish_date: e.target.value})}>{data.publish_date}</TextField>
+                        </Grid>
+                        <Grid align="left" style={{ marginBottom:0, width:'130%', textAlign:'justify' }}>
+                            <TextField
                             id="outlined-multiline-static"
                             label="Descriere"
                             multiline
@@ -88,7 +122,9 @@ export default function ViewBook() {
                             rows={12}
                             variant="outlined"
                             fullWidth
-                            style={{ textAlign:'justify' }}></TextField>
+                            value={book.description}
+                            onChange={(e) => setBook({ ...book, description: e.target.value})}
+                            style={{ textAlign:'justify' }}>{data.description}</TextField>
                         </Grid>
                         <Grid align="left" style={{ marginBottom:0, width:'125%' }}>
                             <Typography></Typography>
@@ -97,12 +133,12 @@ export default function ViewBook() {
 
                         <Paper style={{ padding: '0px 0px', width: '50%', margin: '0px auto', flexDirection:'column', display: 'flex'}} elevation={0}>
                             <Grid align="right" style={{ marginBottom:0 }}>
-                                <Card className={classes.root} label='Imagine copertă'>
-                                    <CardMedia className={classes.media}></CardMedia>
+                                <Card className={classes.root} title={data.title}>
+                                    <CardMedia className={classes.media} image={book.cover}></CardMedia>
                                 </Card>
                             </Grid>
                             <Grid align="right" style={{ marginTop:30, marginBottom:0 }}>
-                                <Button style={{ width:'56%' }} variant="contained" color="primary" startIcon={<AddShoppingCart />}>Adaugă în wishlist</Button>
+                                <Button style={{ width:'12vw' }} variant="contained" color="primary" startIcon={<AddShoppingCart />}>Adaugă în wishlist</Button>
                             </Grid>
                         </Paper>
 

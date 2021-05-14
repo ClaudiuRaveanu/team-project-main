@@ -8,9 +8,18 @@ import Button from '@material-ui/core/Button';
 import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
 import IconButton from '@material-ui/core/IconButton';
 import { Button, Grid, Typography } from '@material-ui/core';
+import axios from 'axios';
 
-const BookCard = (props) => {
-    const book = props.book;
+const BookCard = () => {
+    const url = 'http://localhost:3000/books';
+
+    const [data,setData] = useState([]);
+    useEffect(() => {
+        axios.get(url).then( (res) => { 
+            setData(res.data)
+            console.log(res.data[0])
+         }).catch( (e) => console.log(e) )
+    },[])
 
     const useStyles = makeStyles({
         root: {

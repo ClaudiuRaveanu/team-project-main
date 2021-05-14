@@ -41,7 +41,7 @@ export default function BookReserve() {
     return (
         <Grid>
             <AppBar position='static' style={{background: '#757de8', marginTop: 'auto', justifyContent:'center', flexDirection:'column', textAlign:'center'}}>
-                <Toolbar gutterBottom>
+                <Toolbar gutterbottom="true">
                     <Paper style={paperStyle} elevation={0}>
                         <Button style={btnStyle} href="/">Acasă</Button>
                         <Button href="/wishlist" style={btnStyle}>Wishlist</Button>

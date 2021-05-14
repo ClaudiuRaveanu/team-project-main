@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { TextField, Typography, Button, Grid, Grow, Container, Paper} from '@material-ui/core';
+import { TextField, Typography, Button, Grid, Grow, Container, Paper, ThemeProvider} from '@material-ui/core';
 import useStyles from './styles';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
-const url = 'http://localhost:5000/books/new'
+const url = 'http://localhost:3000/books/new'
 
 const Form = () => {
     const history = useHistory();
@@ -17,16 +18,18 @@ const Form = () => {
         avg_grade:"",
         pages:"",
         reviews:"",
-        publish_date:""
+        publish_date:"",
+        genre:"",
+        cover:"",
+        stock:""
     });
 
     const postBook = () => {
         axios.post(url,book).then( (res) => console.log('success')).catch( (e) => console.log(e));
     }
 
-    const handleSubmit = () => {
-
-    }
+    const ctgs = ['Acțiune', 'Comedie', 'Psihologie', 'Istorie', 'Filozofie', 'Religie', 'Poezie, teatru, studii literare',
+                'Ficțiune', 'Artă, arhitectură', 'Biografii, memorii, jurnale', 'Lingvistică, dicționare', 'Enciclopedii', "Astronomie, spațiu, timp"];
 
     return(
         
@@ -36,13 +39,13 @@ const Form = () => {
             onSubmit={postBook}
             >
             <Typography>
-                Book System
+                Adaugă o carte
             </Typography>
             <TextField
             name="title" 
             variant='outlined'
             fullWidth
-            label="Title"
+            label="Titlu"
             value={book.title}
             onChange={(e) => setBook({ ...book, title: e.target.value})}
             />
@@ -50,7 +53,7 @@ const Form = () => {
             name="author" 
             variant='outlined'
             fullWidth
-            label="Author"
+            label="Autor"
             value={book.author}
             onChange={(e) => setBook({ ...book, author: e.target.value})}
             />
@@ -58,7 +61,7 @@ const Form = () => {
             name="publishing_house" 
             variant='outlined'
             fullWidth
-            label="Publishing House"
+            label="Editură"
             value={book.editure}
             onChange={(e) => setBook({ ...book, editure: e.target.value})}
             />
@@ -66,41 +69,67 @@ const Form = () => {
             name="description" 
             variant='outlined'
             fullWidth
-            label="Description"
+            label="Descriere"
             value={book.description}
             onChange={(e) => setBook({ ...book, description: e.target.value})}
             />
-            <TextField
+            {/* <TextField
             name="grade" 
             variant='outlined'
             fullWidth
             label="Grade"
             value={book.avg_grade}
             onChange={(e) => setBook({ ...book, avg_grade: e.target.value})}
+            /> */}
+            <TextField
+            name="genre" 
+            variant='outlined'
+            fullWidth
+            label="Gen"
+            value={book.genre}
+            onChange={(e) => setBook({ ...book, genre: e.target.value})}
             />
             <TextField
             name="pages" 
             variant='outlined'
             fullWidth
-            label="Pages"
+            label="Număr pagini"
+            type="number"
             value={book.pages}
             onChange={(e) => setBook({ ...book, pages: e.target.value})}
             />
-            <TextField
+            {/* <TextField
             name="reviews" 
             variant='outlined'
             fullWidth
             label="Reviews"
             value={book.reviews}
             onChange={(e) => setBook({ ...book, reviews: e.target.value})}
-            />
+            /> */}
             <TextField
             name="publish-date" 
             variant='outlined'
             fullWidth
-            label="Publish Date"
+            label="Data publicării (anul)"
             value={book.publish_date}
             onChange={(e) => setBook({ ...book, publish_date: e.target.value})}
+            />
+            <TextField
+            name="cover" 
+            variant='outlined'
+            fullWidth
+            label="Imagine copertă"
+            value={book.cover}
+            onChange={(e) => setBook({ ...book, cover: e.target.value})}
+            />
+            <TextField
+            name="stock" 
+            variant='outlined'
+            fullWidth
+            label="Stoc"
+            type="number"
+            value={book.stock}
+            onChange={(e) => setBook({ ...book, stock: e.target.value})}
             />
             <Button
             className={classes.buttonSubmit}
@@ -108,7 +137,7 @@ const Form = () => {
             color='primary'
             size='large'
             type='submit'
-            >Submit</Button>
+            >Trimite</Button>
 
             </form>
             </Paper>
@@ -119,7 +148,7 @@ const Form = () => {
             color='primary'
             size='large'
             onClick={() => history.push('/')}
-            >Get Back</Button>
+            >Înapoi</Button>
         </Container>
         
     );
