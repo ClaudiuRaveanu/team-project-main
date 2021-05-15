@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {Grid, Typography, Paper, Toolbar, AppBar, TextField, Link } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -6,6 +6,8 @@ import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {Checkbox, FormControlLabel } from '@material-ui/core';
+import axios from 'axios';
+import { set } from 'mongoose';
 
 export default function AddReview() {
 
@@ -17,15 +19,9 @@ export default function AddReview() {
     const paper2 = { padding: '40px 40px', width: '50vw', margin: '40px auto', flexDirection:'column', display: 'flex'}
     const paper3 = { padding: '0px 0px', width: '50%', margin: '0px auto', flexDirection:'column', display: 'flex'}
 
-    const [checked, setChecked] = React.useState(false);
-
-    const handleChange = (event) => {
-        setChecked(event.target.checked);
-    };
-
     const useStyles = makeStyles((theme) => ({
         root: {
-            maxWidth: 270,
+            maxWidth: "13vw",
             margin: '0vw',
         },
         media: {
@@ -53,13 +49,39 @@ export default function AddReview() {
 
     const classes = useStyles();
 
-    const [values] = React.useState({
+    const [review, setRv] = useState({
+        book_id: "",
+        rv_title: "",
+        grade: ['1','2','3','4','5','6','7','8','9','10'],
+        opinion: "",
+        anon: false
+    });
+
+    const handleChange = (event) => {
+        setRv({ ...review, anon: event.target.checked})
+        // console.log(`checkBox changed from: ${review.anon} to ${!review.anon}`);
+    };
+
+    // console.log(`now \'anon\' is: ${review.anon}`);
+
+    const grades = ['1','2','3','4','5','6','7','8','9','10'];
+
+    const url = 'http://localhost:3000/books';
+
+    const [data,setData] = useState([]);
+    useEffect(() => {
+        axios.get(url).then( (res) => { 
+            setData(res.data)
+        }).catch( (e) => console.log(e) )
+    },[])
+
+    const [values, setValues] = React.useState({
         image_link: '',
     });
 
-    // const handleImage = (lnk) => (event) => {
-    //     setValues({ ...values, [lnk]: event.target.value });
-    // };
+    const handleImage = (lnk) => (event) => {
+        setValues({ ...values, [lnk]: event.target.value });
+    };
 
     return (
         <Grid container direction="column">
@@ -86,22 +108,26 @@ export default function AddReview() {
                         <Autocomplete 
                             id="combo-box-demo"
                             disableClearable
-                            options={['Platon','Option 2']}
-                            style={{ width:'125%', marginBottom:'30px' }}
+                            options={data}
+                            getOptionLabel={option => option.title}
+                            onChange={(e, option) => {setRv({ ...review, book_id: option._id }); console.log(option._id); setValues({ ...values, image_link: option.cover })}}
+                            style={{ width:'135%', marginBottom:'30px' }}
                             renderInput={(params) => <TextField {...params} label="Alege o carte" variant="outlined" />}>
                         </Autocomplete>
-                        <Grid align="left" style={{ marginTop:0, width:'125%', marginBottom:30, display:'flex', flexDirection:'row' }}>
-                            <TextField label="Titlu recenzie" variant="outlined" style={{ width:'90%', marginRight:30 }}></TextField>
+                        <Grid align="left" style={{ marginTop:0, width:'135%', marginBottom:30, display:'flex', flexDirection:'row' }}>
+                            <TextField label="Titlu recenzie" variant="outlined" style={{ width:'100%', marginRight:30 }}
+                                        onChange={(e, val) => {setRv({ ...review, rv_title: val })}}></TextField>
 
                             <Autocomplete 
                             id="combo-box-demo"
                             disableClearable
-                            options={['1','2','3','4','5','6','7','8','9','10']}
-                            style={{ width:'30%' }}
-                            renderInput={(params) => <TextField {...params} label="Notă oferită" variant="outlined" />}>
+                            options={grades}
+                            onChange={(e, val) => setRv({ ...review, grade: val })}
+                            style={{ width:'35%' }}
+                            renderInput={(params) => <TextField {...params} label="Nota oferită" variant="outlined" />}>
                             </Autocomplete>
                         </Grid>
-                        <Grid align="left" style={{ marginBottom:30, width:'125%', textAlign:'justify' }}>
+                        <Grid align="left" style={{ marginBottom:30, width:'135%', textAlign:'justify' }}>
                         <TextField
                             id="outlined-multiline-static"
                             label="Părerea ta"
@@ -110,6 +136,7 @@ export default function AddReview() {
                             variant="outlined"
                             fullWidth
                             style={{ textAlign:'justify' }}
+                            onChange={(e, val) => {setRv({ ...review, opinion: val })}}
                         />
                         </Grid>
                         <Grid align="left" style={{ marginBottom:0, width:'125%', display:'flex', flexDirection:'row' }} className={classes.customAuto}>
@@ -118,7 +145,7 @@ export default function AddReview() {
                             <FormControlLabel
                             control={
                             <Checkbox
-                                checked={checked}
+                                checked={review.anon}
                                 onChange={handleChange}
                                 name="checkedB"
                                 color="primary"
@@ -132,7 +159,7 @@ export default function AddReview() {
                         <Paper style={{ padding: '0px 0px', width: '50%', margin: '0px auto', flexDirection:'column', display: 'flex'}} elevation={0}>
                             <Grid align="right" style={{ marginBottom:0 }}>
                                 <Card className={classes.root} label='Imagine copertă'>
-                                    <CardMedia className={classes.media} image={values.image_link}></CardMedia>
+                                    <CardMedia className={classes.media} image={values.image_link} onChange={handleImage(values.image_link)}></CardMedia>
                                 </Card>
                             </Grid>
                         </Paper>

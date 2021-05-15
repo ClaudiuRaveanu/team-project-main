@@ -41,13 +41,19 @@ router.patch('/update/:id', async (req,res) => {
 });
 // GET random book
 router.get('/random', async (req,res) => {
-    // const count = await Book.where({ author: req.body.author}).estimatedDocumentCount();
-    // const random = Math.floor(Math.random * count);
-    // const book = await Book.findOne().skip(random);
-    const rand = Book.aggregate([{$sample: {size:1}}]);
-    //Book.find().limit(10);
-    res.json(rand);
+    const count = await Book.estimatedDocumentCount();
+    const random = Math.floor(Math.random() * count);
+    const book = await Book.findOne().skip(random);
+    Book.find().limit(3);
+    res.json(book);
+    // console.log(`rand = ${book}`);
 })
+
+router.get('/authors', async (req,res)=>{
+    const authors = await Book.find({}, { author: 1, _id: 0 }); 
+    //console.log(`authors = ${authors}`);
+    res.json(authors);
+});
 
 
 module.exports = router;

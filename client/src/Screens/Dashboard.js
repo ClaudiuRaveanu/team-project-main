@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
-import {Grid, Typography, Paper, Toolbar, AppBar, Link, List, ListItem } from '@material-ui/core';
+import {Grid, Typography, Paper, Toolbar, AppBar, List, ListItem, Link as MaterialLink } from '@material-ui/core';
 // import { getCurrentDate } from '../App';
 // import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -13,6 +13,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
 import IconButton from '@material-ui/core/IconButton';
 import axios from 'axios';
+import {Link} from 'react-router-dom';
 
 export default function Dashboard() {
 
@@ -46,19 +47,19 @@ export default function Dashboard() {
         },
         customWidth: {
             maxWidth: 500,
-          },
+        },
     });
 
     const classes = useStyles();
 
-    const url = 'http://localhost:3000/books';
+    const url = 'http://localhost:3000/books/random';
 
-    var random = Math.floor(Math.random() * 5);
+    // var random = Math.floor(Math.random() * 5);
 
     const [data,setData] = useState([]);
     useEffect(() => {
         axios.get(url).then( (res) => { 
-            setData(res.data[random])
+            setData(res.data)
         }).catch( (e) => console.log(e) )
     },[])
 
@@ -79,7 +80,7 @@ export default function Dashboard() {
             </AppBar>
                 <Paper style={{ padding: '20px 20px', width: '50vw', margin: '20px auto', flexDirection:'column', display: 'flex' }} elevation={5}>
                     <Grid align="center" style={{ marginBottom:25 }}>
-                        <Link style={{ fontSize:'25px' }} variant='string' underline='always' color='textPrimary'>Bun venit, nume-user!</Link>
+                        <MaterialLink style={{ fontSize:'25px' }} variant='string' color='textPrimary'>Bun venit, nume-user!</MaterialLink>
                     </Grid>
                     <Paper style={{padding: '0px 0px', width: 'auto', margin: '0px auto', textAlign: 'center', background: 'transparent', display: 'flex'}} elevation={0}>
 
@@ -95,10 +96,11 @@ export default function Dashboard() {
                                 <List>
                                     <ListItem>
                                 <Card className={classes.root} key={data._id}>
+                                <Link to = {{ pathname:'/view-book', state: { data: data } }} className={classes.actions} style={{ color: '#000' }}>
                                     <CardActionArea>
                                         <CardMedia className={classes.media} image={data.cover} title={data.title}></CardMedia>
                                     <CardContent>
-                                        <Typography gutterBottom variant="body1" component="h2" noWrap>
+                                        <Typography gutterBottom variant="body1" component="h2" noWrap style={{ }}>
                                             {data.title}
                                         </Typography>
                                         <Typography noWrap variant="body2" color="textSecondary" component="p" style={{ marginBottom:'0px' }}>
@@ -106,6 +108,7 @@ export default function Dashboard() {
                                         </Typography>
                                     </CardContent>
                                     </CardActionArea>
+                                    </Link>
                                     <CardActions>
                                         <Button className={classes.actions} size="small" color="primary" variant="outlined" style={{ width:'80%' }}>Detalii</Button>
                                             <IconButton aria-label="Adaugă în wishlist" color="primary">

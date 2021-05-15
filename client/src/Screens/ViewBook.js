@@ -22,7 +22,7 @@ export default function ViewBook() {
 
     const useStyles = makeStyles((theme) => ({
         root: {
-            maxWidth: "12vw",
+            maxWidth: "15vw",
             margin: '0vw',
         },
         media: {
@@ -138,7 +138,7 @@ export default function ViewBook() {
                                 </Card>
                             </Grid>
                             <Grid align="right" style={{ marginTop:30, marginBottom:0 }}>
-                                <Button style={{ width:'12vw' }} variant="contained" color="primary" startIcon={<AddShoppingCart />}>Adaugă în wishlist</Button>
+                                <Button style={{ width:'15vw', fontSize:"0.9vw" }} variant="contained" color="primary" startIcon={<AddShoppingCart />}>Adaugă în wishlist</Button>
                             </Grid>
                         </Paper>
 
@@ -147,7 +147,7 @@ export default function ViewBook() {
                 </form>
             </Paper>
 
-            <Paper elevation={5} style={{padding: '40px 40px', width: '50vw', margin: '40px auto', flexDirection:'column', display: 'flex'}}>
+            <Paper elevation={5} style={{padding: '40px 40px', width: '50vw', margin: '40px auto', marginTop:10, flexDirection:'column', display: 'flex'}}>
                 <form>
                     <Grid align="right" style={{ width:'100%', flexDirection:'column', display:'flex' }}>
                         <TextField

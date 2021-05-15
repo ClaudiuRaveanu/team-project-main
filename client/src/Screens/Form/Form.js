@@ -19,7 +19,8 @@ const Form = () => {
         pages:"",
         reviews:"",
         publish_date:"",
-        genre:"",
+        genre:['Acțiune', 'Comedie', 'Psihologie', 'Istorie', 'Filozofie', 'Religie', 'Poezie, teatru, studii literare', "Sport",
+        'Ficțiune', 'Artă, arhitectură', 'Biografii, memorii, jurnale', 'Lingvistică, dicționare', 'Enciclopedii', "Astronomie, spațiu, timp"],
         cover:"",
         stock:""
     });
@@ -28,7 +29,7 @@ const Form = () => {
         axios.post(url,book).then( (res) => console.log('success')).catch( (e) => console.log(e));
     }
 
-    const ctgs = ['Acțiune', 'Comedie', 'Psihologie', 'Istorie', 'Filozofie', 'Religie', 'Poezie, teatru, studii literare',
+    const ctgs = ['Acțiune', 'Comedie', 'Psihologie', 'Istorie', 'Filozofie', 'Religie', 'Poezie, teatru, studii literare', "Sport",
                 'Ficțiune', 'Artă, arhitectură', 'Biografii, memorii, jurnale', 'Lingvistică, dicționare', 'Enciclopedii', "Astronomie, spațiu, timp"];
 
     return(
@@ -81,14 +82,23 @@ const Form = () => {
             value={book.avg_grade}
             onChange={(e) => setBook({ ...book, avg_grade: e.target.value})}
             /> */}
-            <TextField
+            {/* <TextField
             name="genre" 
             variant='outlined'
             fullWidth
             label="Gen"
             value={book.genre}
             onChange={(e) => setBook({ ...book, genre: e.target.value})}
-            />
+            /> */}
+            <Autocomplete
+                id="tags"
+                style={{ marginRight:"16px" }}
+                fullWidth
+                options={ctgs}
+                onChange={(event, value) => setBook({ ...book, genre: value })}
+                renderInput={(params) => (
+                    <TextField {...params} variant="outlined" label="Genuri"/>
+                )}/>
             <TextField
             name="pages" 
             variant='outlined'

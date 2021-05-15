@@ -29,7 +29,6 @@ const BooksView = () => {
     const useStyles = makeStyles({
         root: {
             maxWidth: "12vw",
-            margin: '0.9vw',
         },
         media: {
             height: 0,
@@ -42,8 +41,8 @@ const BooksView = () => {
             justifyContent: 'center',
         },
         actions: {
-            display: 'flex',
             justifyContent: 'center',
+            fullWidth: true
         },
         customWidth: {
             maxWidth: 500,
@@ -90,42 +89,41 @@ const BooksView = () => {
             </AppBar>
             </Grid>
             
-            <Paper style={{padding: '0px 0px', width: 'auto', margin: '4px auto', textAlign: 'top-center', background: 'transparent', display: 'flex', overflow:'auto', maxWidth:'100%' }} elevation={0}>
-
-                <List>
-
-                <ListItem id="cards">
+            <Paper style={{ margin: "auto", width: 'auto', padding: '0',
+                background: 'transparent', overflow:'auto', maxWidth:'100%', textAlign: 'center' }} elevation={0}>
+                    
+                <Grid container justify="space-evenly" alignItems="flex-start" direction="row" style={{ background:"transparent", width:"60%", margin:"auto" }}>
 
                 { data.map( (carte, index) => (
-                    <Link to = {{ pathname:'/view-book', state: { data: data[index] } }} className={classes.actions} color="primary">
-
-                    <Grid container direction="row" justify="space-around" alignItems="center" key={index}>
+                
+                    <Grid item xs={2} key={index} style={{margin:"0.9vw"}}>
                         
-                    <Card className={classes.root}>
-                        <CardActionArea>
+                    <Card className={classes.root} style={{ margin:"auto" }}>
+                        <Link to = {{ pathname:'/view-book', state: { data: data[index] } }} className={classes.actions} color="primary">
+                        <CardActionArea style={{ maxWidth:"12vw", minWidth:"9vw" }}>
                             <CardMedia className={classes.media} image={data[index].cover} title={data[index].title}></CardMedia>
                                 <CardContent>
-                                    <Typography noWrap gutterBottom variant='body1' component="h2">
+                                    <Typography gutterBottom color="textPrimary" variant='body1' align="center" component="h2" style={{ height:"3.2vw", fontSize:"0.91vw" }}>
                                     {data[index].title}
                                     </Typography>
-                                    <Typography noWrap variant="body2" color="textSecondary" component="p" style={{ marginBottom:'0px' }}>
-                                    {data[index].description}
+                                    <Typography noWrap variant="body2" component="p" style={{ color:"#335ebd", marginBottom:'0px', marginTop:"8px", fontSize:"0.82vw" }}>
+                                    {data[index].author}
                                     </Typography>
                                 </CardContent>
-                         </CardActionArea>
+                        </CardActionArea>
+                        </Link>
                         <CardActions className={classes.actions}>
-                            <Button startIcon={<AddShoppingCart />} fullWidth aria-label="wishlist" color="primary" variant="outlined">wishlist</Button>
+                            <Button style={{ fontSize: "0.67vw", marginTop:"-10px" }} aria-label="wishlist" color="primary" variant="outlined">adaugă în wishlist</Button>
                         </CardActions>
-                        </Card>
+                        
+                    </Card>
+                        
                     </Grid>
                     
-                    </Link>
                 ))
                 }
 
-                </ListItem>
-
-                </List>
+                </Grid>
 
             </Paper>
 
