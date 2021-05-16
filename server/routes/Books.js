@@ -49,11 +49,4 @@ router.get('/random', async (req,res) => {
     // console.log(`rand = ${book}`);
 })
 
-router.get('/authors', async (req,res)=>{
-    const authors = await Book.find({}, { author: 1, _id: 0 }); 
-    //console.log(`authors = ${authors}`);
-    res.json(authors);
-});
-
-
 module.exports = router;
