@@ -7,7 +7,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {Checkbox, FormControlLabel } from '@material-ui/core';
 import axios from 'axios';
-import { set } from 'mongoose';
+import {useLocation, useHistory} from 'react-router-dom';
 
 export default function AddReview() {
 
@@ -49,6 +49,27 @@ export default function AddReview() {
 
     const classes = useStyles();
 
+    const grades = ['1','2','3','4','5','6','7','8','9','10'];
+
+    const location = useLocation();
+    const history = useHistory();
+    const bk =  location.state?.data;
+
+    const [book,setBook] = useState({
+        _id: bk._id,
+        title: bk.title,
+        author:bk.author,
+        editure:bk.editure,
+        description:bk.description,
+        genre:bk.genre,
+        cover:bk.cover,
+        avg_grade:bk.avg_grade,
+        pages:bk.pages,
+        reviews:bk.reviews,
+        publish_date:bk.publish_date,
+        stock:bk.stock
+    });
+
     const [review, setRv] = useState({
         book_id: "",
         rv_title: "",
@@ -64,25 +85,31 @@ export default function AddReview() {
 
     // console.log(`now \'anon\' is: ${review.anon}`);
 
-    const grades = ['1','2','3','4','5','6','7','8','9','10'];
+    const updateURL = 'http://localhost:3000/books/update/';
+    
+    const [disabled, setDis] = useState(false);
 
-    const url = 'http://localhost:3000/books';
+    const postReview = () => {
+        book.reviews.push(review);
 
-    const [data,setData] = useState([]);
-    useEffect(() => {
-        axios.get(url).then( (res) => { 
-            setData(res.data)
-        }).catch( (e) => console.log(e) )
-    },[])
+        var sum = 0;
 
-    const [values, setValues] = React.useState({
-        image_link: '',
-    });
+        if (book.reviews.length !== 0) {
 
-    const handleImage = (lnk) => (event) => {
-        setValues({ ...values, [lnk]: event.target.value });
+            for (let i = 0; i < book.reviews.length; i++)
+                sum += parseInt(book.reviews[i].grade);
+    
+            book.avg_grade = sum / book.reviews.length;
+        }
+
+        axios.patch(updateURL + review.book_id, book).then((res) => {
+            console.log('review posted!');
+        }).catch((e) => {console.log(e)})
     };
 
+    review.book_id = bk._id;
+    // console.log(review.book_id);
+    
     return (
         <Grid container direction="column">
 
@@ -105,18 +132,12 @@ export default function AddReview() {
                     <Paper elevation={0} style={{padding: '0px 0px', width: 'auto', margin: '0px auto', textAlign: 'center', background: 'transparent', display: 'flex'}}>
 
                         <Paper style={paper3} elevation={0}>
-                        <Autocomplete 
-                            id="combo-box-demo"
-                            disableClearable
-                            options={data}
-                            getOptionLabel={option => option.title}
-                            onChange={(e, option) => {setRv({ ...review, book_id: option._id }); console.log(option._id); setValues({ ...values, image_link: option.cover })}}
-                            style={{ width:'135%', marginBottom:'30px' }}
-                            renderInput={(params) => <TextField {...params} label="Alege o carte" variant="outlined" />}>
-                        </Autocomplete>
+                        <Grid align="left" style={{ marginBottom:30, width:'135%', textAlign:'justify' }}>
+                            <TextField variant="outlined" label="Titlu carte" inputProps={{ readOnly:true, }} value={bk.title} fullWidth ></TextField>
+                        </Grid>
                         <Grid align="left" style={{ marginTop:0, width:'135%', marginBottom:30, display:'flex', flexDirection:'row' }}>
-                            <TextField label="Titlu recenzie" variant="outlined" style={{ width:'100%', marginRight:30 }}
-                                        onChange={(e, val) => {setRv({ ...review, rv_title: val })}}></TextField>
+                            <TextField required label="Titlu recenzie" variant="outlined" style={{ width:'100%', marginRight:30 }}
+                                        onChange={(e) => {setRv({ ...review, rv_title: e.target.value })}}></TextField>
 
                             <Autocomplete 
                             id="combo-box-demo"
@@ -124,7 +145,7 @@ export default function AddReview() {
                             options={grades}
                             onChange={(e, val) => setRv({ ...review, grade: val })}
                             style={{ width:'35%' }}
-                            renderInput={(params) => <TextField {...params} label="Nota oferită" variant="outlined" />}>
+                            renderInput={(params) => <TextField required {...params} label="Nota oferită" variant="outlined" />}>
                             </Autocomplete>
                         </Grid>
                         <Grid align="left" style={{ marginBottom:30, width:'135%', textAlign:'justify' }}>
@@ -136,7 +157,7 @@ export default function AddReview() {
                             variant="outlined"
                             fullWidth
                             style={{ textAlign:'justify' }}
-                            onChange={(e, val) => {setRv({ ...review, opinion: val })}}
+                            onChange={(e) => {setRv({ ...review, opinion: e.target.value })}}
                         />
                         </Grid>
                         <Grid align="left" style={{ marginBottom:0, width:'125%', display:'flex', flexDirection:'row' }} className={classes.customAuto}>
@@ -159,14 +180,19 @@ export default function AddReview() {
                         <Paper style={{ padding: '0px 0px', width: '50%', margin: '0px auto', flexDirection:'column', display: 'flex'}} elevation={0}>
                             <Grid align="right" style={{ marginBottom:0 }}>
                                 <Card className={classes.root} label='Imagine copertă'>
-                                    <CardMedia className={classes.media} image={values.image_link} onChange={handleImage(values.image_link)}></CardMedia>
+                                    <CardMedia className={classes.media} image={bk.cover}></CardMedia>
                                 </Card>
                             </Grid>
                         </Paper>
 
                     </Paper>
                     <Grid align="center" style={{ marginTop:30, marginBottom:0 }}>
-                        <Button style={{ width:'35%', background: '#3f51b5', color: '#FFFFFF'}}>Adaugă recenzie</Button>
+                        <Button onClick={() => { postReview(); setDis(true);
+                            setRv({ ...review, rv_title: "" })
+                            setRv({ ...review, opinion: "" })
+                            setRv({ ...review, grade: ['1','2','3','4','5','6','7','8','9','10'] })
+                            setRv({ ...review, anon: false })}}
+                            style={{ width:'35%'}} color='primary' variant="contained">Adaugă recenzie</Button>
                     </Grid>
                 </form>
                 <Grid></Grid>

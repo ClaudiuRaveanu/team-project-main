@@ -29,6 +29,7 @@ const BooksView = () => {
     const useStyles = makeStyles({
         root: {
             maxWidth: "12vw",
+            width: "10vw",
         },
         media: {
             height: 0,
@@ -92,15 +93,17 @@ const BooksView = () => {
             <Paper style={{ margin: "auto", width: 'auto', padding: '0',
                 background: 'transparent', overflow:'auto', maxWidth:'100%', textAlign: 'center' }} elevation={0}>
                     
-                <Grid container justify="space-evenly" alignItems="flex-start" direction="row" style={{ background:"transparent", width:"60%", margin:"auto" }}>
+                <Grid container justify="space-evenly" alignItems="flex-start" direction="row" style={{ background:"transparent", width:"90%", margin:"auto" }}>
 
                 { data.map( (carte, index) => (
                 
                     <Grid item xs={2} key={index} style={{margin:"0.9vw"}}>
                         
                     <Card className={classes.root} style={{ margin:"auto" }}>
+                        
                         <Link to = {{ pathname:'/view-book', state: { data: data[index] } }} className={classes.actions} color="primary">
-                        <CardActionArea style={{ maxWidth:"12vw", minWidth:"9vw" }}>
+
+                        <CardActionArea style={{ maxWidth:"12vw", minWidth:"10vw" }}>
                             <CardMedia className={classes.media} image={data[index].cover} title={data[index].title}></CardMedia>
                                 <CardContent>
                                     <Typography gutterBottom color="textPrimary" variant='body1' align="center" component="h2" style={{ height:"3.2vw", fontSize:"0.91vw" }}>

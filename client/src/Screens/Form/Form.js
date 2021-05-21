@@ -15,9 +15,9 @@ const Form = () => {
         author:"",
         editure:"",
         description:"",
-        avg_grade:"",
+        avg_grade:0,
         pages:"",
-        reviews:"",
+        reviews:[],
         publish_date:"",
         genre:['Acțiune', 'Comedie', 'Psihologie', 'Istorie', 'Filozofie', 'Religie', 'Poezie, teatru, studii literare', "Sport",
         'Ficțiune', 'Artă, arhitectură', 'Biografii, memorii, jurnale', 'Lingvistică, dicționare', 'Enciclopedii', "Astronomie, spațiu, timp"],
@@ -46,6 +46,7 @@ const Form = () => {
             name="title" 
             variant='outlined'
             fullWidth
+            required
             label="Titlu"
             value={book.title}
             onChange={(e) => setBook({ ...book, title: e.target.value})}
@@ -54,6 +55,7 @@ const Form = () => {
             name="author" 
             variant='outlined'
             fullWidth
+            required
             label="Autor"
             value={book.author}
             onChange={(e) => setBook({ ...book, author: e.target.value})}
@@ -62,6 +64,7 @@ const Form = () => {
             name="publishing_house" 
             variant='outlined'
             fullWidth
+            required
             label="Editură"
             value={book.editure}
             onChange={(e) => setBook({ ...book, editure: e.target.value})}
@@ -70,6 +73,7 @@ const Form = () => {
             name="description" 
             variant='outlined'
             fullWidth
+            required
             label="Descriere"
             value={book.description}
             onChange={(e) => setBook({ ...book, description: e.target.value})}
@@ -97,12 +101,13 @@ const Form = () => {
                 options={ctgs}
                 onChange={(event, value) => setBook({ ...book, genre: value })}
                 renderInput={(params) => (
-                    <TextField {...params} variant="outlined" label="Genuri"/>
+                    <TextField {...params} required variant="outlined" label="Genuri"/>
                 )}/>
             <TextField
             name="pages" 
             variant='outlined'
             fullWidth
+            required
             label="Număr pagini"
             type="number"
             value={book.pages}
@@ -120,6 +125,7 @@ const Form = () => {
             name="publish-date" 
             variant='outlined'
             fullWidth
+            required
             label="Data publicării (anul)"
             value={book.publish_date}
             onChange={(e) => setBook({ ...book, publish_date: e.target.value})}
@@ -128,6 +134,7 @@ const Form = () => {
             name="cover" 
             variant='outlined'
             fullWidth
+            required
             label="Imagine copertă"
             value={book.cover}
             onChange={(e) => setBook({ ...book, cover: e.target.value})}
@@ -136,6 +143,7 @@ const Form = () => {
             name="stock" 
             variant='outlined'
             fullWidth
+            required
             label="Stoc"
             type="number"
             value={book.stock}

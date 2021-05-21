@@ -8,7 +8,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Icon from '@material-ui/core/Icon';
-import { useLocation , useHistory} from 'react-router-dom';
+import { useLocation , useHistory, Link as Lnk} from 'react-router-dom';
 
 export default function ViewBook() {
 
@@ -55,6 +55,7 @@ export default function ViewBook() {
     const classes = useStyles();
 
     const [book,setBook] = useState({
+        _id: data._id,
         title: data.title,
         author:data.author,
         editure:data.editure,
@@ -138,7 +139,12 @@ export default function ViewBook() {
                                 </Card>
                             </Grid>
                             <Grid align="right" style={{ marginTop:30, marginBottom:0 }}>
-                                <Button style={{ width:'15vw', fontSize:"0.9vw" }} variant="contained" color="primary" startIcon={<AddShoppingCart />}>Adaugă în wishlist</Button>
+                                <Button style={{ width:'15vw', fontSize:"0.9vw", height:"1.6vw" }} variant="contained" color="primary" startIcon={<AddShoppingCart />}>Adaugă în wishlist</Button>
+                            </Grid>
+                            <Grid style={{ marginTop:20, marginBottom:0, marginLeft:"40%" }}>
+                                <Lnk to= {{ pathname:'/add-review', state: { data: book } }}>
+                                    <Button style={{ width:'15vw', fontSize:"0.9vw", height:"1.6vw", background:"#99C24D" }} variant="contained">Adaugă review</Button>
+                                </Lnk>
                             </Grid>
                         </Paper>
 
@@ -147,39 +153,25 @@ export default function ViewBook() {
                 </form>
             </Paper>
 
-            <Paper elevation={5} style={{padding: '40px 40px', width: '50vw', margin: '40px auto', marginTop:10, flexDirection:'column', display: 'flex'}}>
+            <Paper elevation={book.reviews.length === 0 ? 0 : 5} style={{padding: '40px 40px', width: '50vw', margin: '40px auto', marginTop:0, flexDirection:'column', display: 'flex'}}>
                 <form>
-                    <Grid align="right" style={{ width:'100%', flexDirection:'column', display:'flex' }}>
+                    {book.reviews.map( (carte, index) => (
+                    <Grid align="right" style={{ padding: '0px 0px', width:'100%', flexDirection:'column', display:'flex', marginBottom:0 }} key="index">
                         <TextField
                         id="outlined-multiline-static"
-                        label="Părere"
+                        label={book.reviews[index].rv_title}
                         multiline
                         inputProps={{ readOnly:true, }}
                         rows={3}
-                        defaultValue="Prima recenzie a cărții."
+                        defaultValue={book.reviews[index].opinion}
                         variant="outlined"
                         fullWidth/>
-                        <Typography style={{marginTop:'15', padding:'10px 10px'}}>
+                        <Typography style={{marginTop:'15', padding:'10px 10px', marginBottom:0}}>
                             <Icon><AccountCircle /></Icon>
-                            Postată de Anonim
+                            Postată de Anonim (notă oferită: {book.reviews[index].grade})
                         </Typography>
                     </Grid>
-
-                    <Grid align="right" style={{ marginTop:25, width:'100%', flexDirection:'column', display:'flex' }}>
-                        <TextField
-                        id="outlined-multiline-static"
-                        label="Părere"
-                        multiline
-                        inputProps={{ readOnly:true, }}
-                        rows={3}
-                        defaultValue="A doua recenzie a cărții."
-                        variant="outlined"
-                        fullWidth/>
-                        <Typography style={{marginTop:'15', padding:'10px 10px'}}>
-                            <Icon><AccountCircle /></Icon>
-                            Postată de Anonim
-                        </Typography>
-                    </Grid>
+                    ))}
                 </form>
             </Paper>
         </Grid>

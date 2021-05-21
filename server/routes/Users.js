@@ -24,11 +24,9 @@ router.post('/register', async (req,res) => {
             res.send('Success')
         }
     })
-
     
 }
 
 );
-
 
 module.exports = router;
