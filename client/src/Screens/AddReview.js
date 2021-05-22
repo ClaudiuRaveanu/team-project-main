@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Grid, Typography, Paper, Toolbar, AppBar, TextField, Link } from '@material-ui/core';
+import {Grid, Typography, Paper, Toolbar, AppBar, TextField, Link, Collapse, IconButton } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
@@ -8,6 +8,8 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import {Checkbox, FormControlLabel } from '@material-ui/core';
 import axios from 'axios';
 import {useLocation, useHistory} from 'react-router-dom';
+import CloseIcon from '@material-ui/icons/Close';
+import Alert from '@material-ui/lab/Alert';
 
 export default function AddReview() {
 
@@ -83,11 +85,11 @@ export default function AddReview() {
         // console.log(`checkBox changed from: ${review.anon} to ${!review.anon}`);
     };
 
+    const [open, setOpen] = useState(false);
+
     // console.log(`now \'anon\' is: ${review.anon}`);
 
     const updateURL = 'http://localhost:3000/books/update/';
-    
-    const [disabled, setDis] = useState(false);
 
     const postReview = () => {
         book.reviews.push(review);
@@ -102,7 +104,7 @@ export default function AddReview() {
             book.avg_grade = sum / book.reviews.length;
         }
 
-        axios.patch(updateURL + review.book_id, book).then((res) => {
+        axios.patch(updateURL + review.book_id, book, { withCredentials: true }).then((res) => {
             console.log('review posted!');
         }).catch((e) => {console.log(e)})
     };
@@ -143,7 +145,7 @@ export default function AddReview() {
                             id="combo-box-demo"
                             disableClearable
                             options={grades}
-                            onChange={(e, val) => setRv({ ...review, grade: val })}
+                            onChange={(e, val) => { setRv({ ...review, grade: val }); }}
                             style={{ width:'35%' }}
                             renderInput={(params) => <TextField required {...params} label="Nota oferită" variant="outlined" />}>
                             </Autocomplete>
@@ -153,6 +155,7 @@ export default function AddReview() {
                             id="outlined-multiline-static"
                             label="Părerea ta"
                             multiline
+                            required
                             rows={5}
                             variant="outlined"
                             fullWidth
@@ -187,16 +190,23 @@ export default function AddReview() {
 
                     </Paper>
                     <Grid align="center" style={{ marginTop:30, marginBottom:0 }}>
-                        <Button onClick={() => { postReview(); setDis(true);
-                            setRv({ ...review, rv_title: "" })
-                            setRv({ ...review, opinion: "" })
-                            setRv({ ...review, grade: ['1','2','3','4','5','6','7','8','9','10'] })
-                            setRv({ ...review, anon: false })}}
+                        <Button type="Submit" onClick={() => { setTimeout(() => {setOpen(true);}, 500)
+                            if (review.opinion !== "" && review.rv_title !== "" && review.grade !== Array(10))
+                                { setTimeout(() => { window.location.reload(); }, 3000); } 
+                            else { setTimeout(() => { setOpen(false); }, 10000); }
+                            }}
                             style={{ width:'35%'}} color='primary' variant="contained">Adaugă recenzie</Button>
                     </Grid>
                 </form>
-                <Grid></Grid>
             </Paper>
+            <Collapse in={open} style={{ margin: 'auto', marginBottom:'30px', width:'35%' }}>
+                <Alert severity={review.opinion === "" && review.rv_title === "" ? "success" : "error"} action={ 
+                    <IconButton aria-label="close" color="inherit" size="small" onClick={() => {setOpen(false);}}>
+                        <CloseIcon fontSize="inherit" />
+                    </IconButton>
+                    }>{review.opinion === "" && review.rv_title === "" && review.grade === Array(10) ? 'Recenzia a fost postată!' : 'Recenzia nu a putut fi postată!'}
+                </Alert>
+            </Collapse>
         </Grid>
     );
 }

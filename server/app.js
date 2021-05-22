@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 
+
 // Create express app
 const app = express();
 
@@ -27,8 +28,16 @@ db.once('open', () => {
 })
 
 // MiddleWare
+
+
 app.use(express.json());
-app.use(cors());
+app.use(
+    cors({
+        origin: "http://localhost:5000", // allow to server to accept request from different origin
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+        credentials: true, // allow session cookie from browser to pass through
+  })
+);
 app.use(
     session({
         secret: "secretcode",
@@ -46,11 +55,12 @@ const LocalStrategy = passportLocal.Strategy
 
 
 // Routes
-app.get('/dashboard', (req,res) => {
+app.get('/', (req,res) => {
         res.send("hello!");
 });
 
 const BookRoutes = require('./routes/Books');
+
 app.use('/Books', BookRoutes);
 
 const UserRoutes = require('./routes/Users');

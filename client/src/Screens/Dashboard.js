@@ -14,6 +14,7 @@ import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
 import IconButton from '@material-ui/core/IconButton';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
+import { useAuth } from './AuthContext/use-auth';
 
 export default function Dashboard() {
 
@@ -58,10 +59,14 @@ export default function Dashboard() {
 
     const [data,setData] = useState([]);
     useEffect(() => {
-        axios.get(url).then( (res) => { 
+        axios.get(url, { withCredentials: true }).then( (res) => { 
             setData(res.data)
         }).catch( (e) => console.log(e) )
     },[])
+
+    const auth = useAuth();
+
+    console.log(auth.user);
 
     const preventDefault = (event) => event.preventDefault();
   
@@ -121,6 +126,7 @@ export default function Dashboard() {
                                 </List>
                             </Grid>
                         </Paper>
+                        <Button href="/addBook">Redirect</Button>
                         </form>
                     </Paper>
                 </Paper>

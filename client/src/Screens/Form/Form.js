@@ -26,7 +26,7 @@ const Form = () => {
     });
 
     const postBook = () => {
-        axios.post(url,book).then( (res) => console.log('success')).catch( (e) => console.log(e));
+        axios.post(url,book, { withCredentials: true }).then( (res) => console.log('success')).catch( (e) => console.log(e));
     }
 
     const ctgs = ['Acțiune', 'Comedie', 'Psihologie', 'Istorie', 'Filozofie', 'Religie', 'Poezie, teatru, studii literare', "Sport",

@@ -3,6 +3,8 @@ import React from 'react';
 import { TextField, Grid,Paper, Button, Typography, Link } from '@material-ui/core';
 import MuiPhoneNumber from 'material-ui-phone-number';
 
+import axios from 'axios';
+
 // const initialValues = {
 //     email:'',
 //     password:''
@@ -19,6 +21,17 @@ const RegisterScreen = () => {
     // const handleChange = (event) => {
     //     setChecked(event.target.checked);
     // };
+
+    const [user, setUser] = React.useState({
+        username: "",
+        password: ""
+    });
+
+    const url = 'http://localhost:3000/users/register';
+
+    const postUser = () => {
+        axios.post(url,user, { withCredentials: true }).then( (res) => console.log(user)).catch( (e) => console.log(e));
+    }
 
     return(
         <Grid>
@@ -39,6 +52,7 @@ const RegisterScreen = () => {
                     id="firstName"
                     label="Nume"
                     autoFocus
+                    onChange={(e) => setUser({ ...user, username: e.target.value})}
                     />
                     </Grid>
                     <Grid item xs>
@@ -73,6 +87,7 @@ const RegisterScreen = () => {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={(e) => setUser({ ...user, password: e.target.value})}
                 />
                 <TextField 
                 variant="outlined"
@@ -82,7 +97,7 @@ const RegisterScreen = () => {
                 name="password2"
                 label="Rescrie parola"
                 type="password"
-                id="password"
+                id="password2"
                 autoComplete="current-password"
                 />
                 <MuiPhoneNumber
@@ -123,7 +138,7 @@ const RegisterScreen = () => {
 
                 
                 
-                <Button type='Submit' style={btnStyle} variant='contained' color='primary'>Trimite</Button>
+                
                 <Grid container justify='flex-end' style={{marginTop:16}}>
                     <Link href="/signin">
                         Ai deja un cont?
@@ -133,6 +148,8 @@ const RegisterScreen = () => {
                 
 
                 </form>
+
+                <Button style={btnStyle} variant='contained' onClick={() => {postUser(); console.log(user.password);}} color='primary'>Trimite</Button>
 
 
 

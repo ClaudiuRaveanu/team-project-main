@@ -1,19 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import Form from '../Form/Form';
-import { Grid, Typography, AppBar, Button } from '@material-ui/core'
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import React, { useState } from 'react';
+import {useHistory} from 'react-router-dom'
+
+import { Grid, Typography, AppBar, } from '@material-ui/core'
+
 import Paper from '@material-ui/core/Paper';
 
 import { makeStyles } from '@material-ui/core/styles';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { useAuth } from '../AuthContext/use-auth'
 
-import BookDetail from '../BookDetail/BookDetail';
+
+
 import BookList from '../BookList/BookList';
 import UserList from '../Users/UserList';
 
@@ -44,26 +40,27 @@ const useStyles = makeStyles((theme) => ({
     }
   }));
 
-const url = 'http://localhost:3000/books'
+
 
 
 const Home = () => {
 
     const classes = useStyles();
-
-    const [data,setData] = useState([]);
+    const history = useHistory()
+    
     const [showBooks,setShowBooks] = useState(false);
     const [showUsers,setShowUsers] = useState(false);
     
-    
+    const auth = useAuth();
 
-    const preventDefault = (event) => event.preventDefault();
+    
     return(
         <>
             <AppBar position='static' className={classes.appBar}>
                 <Typography variant="h6" className={classes.title}>
                     Staff panel
                 </Typography>
+                <button onClick = {() => history.push('/login')}>LogIn</button>
             </AppBar>
             
             
@@ -84,34 +81,35 @@ const Home = () => {
             <Typography variant="h6" className={classes.title}>
                    Book Management
             </Typography>
-            <Link 
-            className={classes.link}
-            onClick={ () => {
-                setShowBooks(!showBooks);
-                setShowUsers(false);
-            }
-            } 
             
-            
-            >Books</Link>
+            <h4 onClick={
+                () => {
+                    setShowBooks(!showBooks);
+                    setShowUsers(false);
+                }
+            }>Book</h4>
             </Paper>
 
             <Paper className={classes.paper}>
             <Typography variant="h6" className={classes.title}>
                    User Management
             </Typography>
-            <Link 
+            
+            <h4
             className={classes.link}
             onClick={ () => {
                 setShowUsers(!showUsers);
                 setShowBooks(false);
             }}
             
-            >Users</Link>
+            >Users</h4>
             </Paper>
             </Grid>
              
+            <button onClick={() => {
+                auth.signout()
                 
+                }}>Logout</button>
                 
             </Grid>
             

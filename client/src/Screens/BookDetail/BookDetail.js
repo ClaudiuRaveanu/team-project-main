@@ -30,11 +30,11 @@ const BookDetail = (  ) => {
     const postBook = (event) => {
         event.preventDefault();
         axios.patch(updateURL + data._id,
-            book
+            book, { withCredentials: true }
             ).then( (res) => console.log(res)).catch( (e) => e)   
     }
     const handleDelete = () =>{
-        axios.delete(deleteURL + data._id).then( (res) => console.log(res)).catch( (e) => console.log(e));
+        axios.delete(deleteURL + data._id, { withCredentials: true }).then( (res) => console.log(res)).catch( (e) => console.log(e));
         history.push('/');
     }
     

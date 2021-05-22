@@ -12,6 +12,7 @@ import ShoppingCart from '@material-ui/icons/ShoppingCart';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { useAuth } from './AuthContext/use-auth'
 
 const url = 'http://localhost:3000/Books'
 
@@ -66,10 +67,14 @@ const BooksView = () => {
 
     const [data,setData] = useState([]);
     useEffect(() => {
-        axios.get(url).then( (res) => { 
+        axios.get(url, { withCredentials: true }).then( (res) => { 
             setData(res.data)
         }).catch( (e) => console.log(e) )
     },[])
+
+    const auth = useAuth();
+
+    console.log(auth.user);
 
     const preventDefault = (event) => event.preventDefault();
     
