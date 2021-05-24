@@ -9,6 +9,7 @@ import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Icon from '@material-ui/core/Icon';
 import { useLocation , useHistory, Link as Lnk} from 'react-router-dom';
+import { useAuth } from './AuthContext/use-auth'
 
 export default function ViewBook() {
 
@@ -68,6 +69,8 @@ export default function ViewBook() {
         publish_date:data.publish_date,
         stock:data.stock
     });
+
+    const auth = useAuth();
 
     return (
         <Grid container direction="column">
@@ -143,7 +146,7 @@ export default function ViewBook() {
                             </Grid>
                             <Grid style={{ marginTop:20, marginBottom:0, marginLeft:"40%" }}>
                                 <Lnk to= {{ pathname:'/add-review', state: { data: book } }}>
-                                    <Button style={{ width:'15vw', fontSize:"0.9vw", height:"1.6vw", background:"#99C24D" }} variant="contained">Adaugă review</Button>
+                                    <Button style={{ width:'15vw', fontSize:"0.9vw", height:"1.6vw", background:"#99C24D" }} variant="contained">Adaugă recenzie</Button>
                                 </Lnk>
                             </Grid>
                         </Paper>
@@ -168,7 +171,7 @@ export default function ViewBook() {
                         fullWidth/>
                         <Typography style={{marginTop:'15', padding:'10px 10px', marginBottom:0}}>
                             <Icon><AccountCircle /></Icon>
-                            Postată de Anonim (notă oferită: {book.reviews[index].grade})
+                            Postată de {book.reviews[index].anon ? 'Anonim' : auth.user} (notă oferită: {book.reviews[index].grade})
                         </Typography>
                     </Grid>
                     ))}

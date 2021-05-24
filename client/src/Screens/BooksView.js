@@ -29,8 +29,8 @@ const BooksView = () => {
 
     const useStyles = makeStyles({
         root: {
-            maxWidth: "12vw",
-            width: "10vw",
+            maxWidth: "14vw",
+            width: "12vw",
         },
         media: {
             height: 0,
@@ -102,17 +102,17 @@ const BooksView = () => {
 
                 { data.map( (carte, index) => (
                 
-                    <Grid item xs={2} key={index} style={{margin:"0.9vw"}}>
+                    <Grid item xs={2} key={index} style={{margin:"1.3vw"}}>
                         
                     <Card className={classes.root} style={{ margin:"auto" }}>
                         
                         <Link to = {{ pathname:'/view-book', state: { data: data[index] } }} className={classes.actions} color="primary">
 
-                        <CardActionArea style={{ maxWidth:"12vw", minWidth:"10vw" }}>
+                        <CardActionArea style={{ maxWidth:"14vw", minWidth:"12vw" }}>
                             <CardMedia className={classes.media} image={data[index].cover} title={data[index].title}></CardMedia>
                                 <CardContent>
                                     <Typography gutterBottom color="textPrimary" variant='body1' align="center" component="h2" style={{ height:"3.2vw", fontSize:"0.91vw" }}>
-                                    {data[index].title}
+                                    <u>{data[index].title}</u>
                                     </Typography>
                                     <Typography noWrap variant="body2" component="p" style={{ color:"#335ebd", marginBottom:'0px', marginTop:"8px", fontSize:"0.82vw" }}>
                                     {data[index].author}

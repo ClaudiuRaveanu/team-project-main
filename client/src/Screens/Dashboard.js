@@ -29,7 +29,7 @@ export default function Dashboard() {
 
     const useStyles = makeStyles({
         root: {
-            maxWidth: 270,
+            width: "14vw",
             margin: '0.9vw',
         },
         media: {
@@ -85,48 +85,42 @@ export default function Dashboard() {
             </AppBar>
                 <Paper style={{ padding: '20px 20px', width: '50vw', margin: '20px auto', flexDirection:'column', display: 'flex' }} elevation={5}>
                     <Grid align="center" style={{ marginBottom:25 }}>
-                        <MaterialLink style={{ fontSize:'25px' }} variant='string' color='textPrimary'>Bun venit, nume-user!</MaterialLink>
+                        <MaterialLink style={{ fontSize:'25px' }} underline="always" variant='string' color='textPrimary'>Bun venit, {auth.user}!</MaterialLink>
                     </Grid>
                     <Paper style={{padding: '0px 0px', width: 'auto', margin: '0px auto', textAlign: 'center', background: 'transparent', display: 'flex'}} elevation={0}>
 
                         <form>
                         <Paper style={{padding: '0px 0px', width: '100%', margin: '0px auto', flexDirection:'column', display: 'flex'}} elevation={0}>
 
-                            <Grid align='left' style={{ width:'100%', marginBottom:20 }}>
+                            <Grid align='center' style={{ width:'100%', marginBottom:20 }}>
                                 <Typography>Astăzi nu aveți nicio carte de predat.</Typography>
                             </Grid>
 
                             <Grid align="center" style={{ width:'100%', marginBottom:0 }}>
                                 <Paper elevation={3} style={{padding:'5px 5px'}}><Typography>Sugestia săptămânii</Typography></Paper>
-                                <List>
-                                    <ListItem>
                                 <Card className={classes.root} key={data._id}>
                                 <Link to = {{ pathname:'/view-book', state: { data: data } }} className={classes.actions} style={{ color: '#000' }}>
                                     <CardActionArea>
                                         <CardMedia className={classes.media} image={data.cover} title={data.title}></CardMedia>
                                     <CardContent>
-                                        <Typography gutterBottom variant="body1" component="h2" noWrap style={{ }}>
-                                            {data.title}
+                                        <Typography color="textPrimary" variant='body1' align="center" component="h2" style={{ height:"2.1vw", fontSize:"0.98vw", marginBottom:"20px" }}>
+                                            <u>{data.title}</u>
                                         </Typography>
-                                        <Typography noWrap variant="body2" color="textSecondary" component="p" style={{ marginBottom:'0px' }}>
-                                            {data.description}
+                                        <Typography noWrap align="center" variant="body2" component="p" style={{ color:"#335ebd", marginBottom:'0px', fontSize:"0.9vw" }}>
+                                            {data.author}
                                         </Typography>
                                     </CardContent>
                                     </CardActionArea>
                                     </Link>
                                     <CardActions>
-                                        <Button className={classes.actions} size="small" color="primary" variant="outlined" style={{ width:'80%' }}>Detalii</Button>
-                                            <IconButton aria-label="Adaugă în wishlist" color="primary">
-                                                <AddShoppingCart />
-                                            </IconButton>
+                                        <Button className={classes.actions} startIcon={<AddShoppingCart/ >} color="primary" variant="outlined" style={{ fontSize:"0.9vw"}} fullWidth>
+                                            Adaugă în wishlist
+                                        </Button>
                                     </CardActions>
                                 </Card>
-                                
-                                    </ListItem>
-                                </List>
                             </Grid>
                         </Paper>
-                        <Button href="/addBook">Redirect</Button>
+                        {/* <Button href="/addBook">Redirect</Button> */}
                         </form>
                     </Paper>
                 </Paper>

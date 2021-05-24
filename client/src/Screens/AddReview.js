@@ -10,6 +10,7 @@ import axios from 'axios';
 import {useLocation, useHistory} from 'react-router-dom';
 import CloseIcon from '@material-ui/icons/Close';
 import Alert from '@material-ui/lab/Alert';
+import { useAuth } from './AuthContext/use-auth';
 
 export default function AddReview() {
 
@@ -57,6 +58,8 @@ export default function AddReview() {
     const history = useHistory();
     const bk =  location.state?.data;
 
+    const preventDefault = (event) => event.preventDefault();
+
     const [book,setBook] = useState({
         _id: bk._id,
         title: bk.title,
@@ -72,18 +75,22 @@ export default function AddReview() {
         stock:bk.stock
     });
 
+    const auth = useAuth();
+
     const [review, setRv] = useState({
-        book_id: "",
+        book_id: book._id,
         rv_title: "",
-        grade: ['1','2','3','4','5','6','7','8','9','10'],
+        grade: "",
         opinion: "",
-        anon: false
+        anon: true
     });
 
     const handleChange = (event) => {
         setRv({ ...review, anon: event.target.checked})
         // console.log(`checkBox changed from: ${review.anon} to ${!review.anon}`);
     };
+
+    if (auth.user === null) review.anon = true;
 
     const [open, setOpen] = useState(false);
 
@@ -109,8 +116,12 @@ export default function AddReview() {
         }).catch((e) => {console.log(e)})
     };
 
-    review.book_id = bk._id;
-    // console.log(review.book_id);
+    const redirect = () => {
+        history.push({
+            pathname: `/view-book`,
+            state: { data: book }
+        })
+    }
     
     return (
         <Grid container direction="column">
@@ -138,7 +149,7 @@ export default function AddReview() {
                             <TextField variant="outlined" label="Titlu carte" inputProps={{ readOnly:true, }} value={bk.title} fullWidth ></TextField>
                         </Grid>
                         <Grid align="left" style={{ marginTop:0, width:'135%', marginBottom:30, display:'flex', flexDirection:'row' }}>
-                            <TextField required label="Titlu recenzie" variant="outlined" style={{ width:'100%', marginRight:30 }}
+                            <TextField required label="Titlu recenzie" variant="outlined" style={{ width:'90%', marginRight:30 }}
                                         onChange={(e) => {setRv({ ...review, rv_title: e.target.value })}}></TextField>
 
                             <Autocomplete 
@@ -146,7 +157,7 @@ export default function AddReview() {
                             disableClearable
                             options={grades}
                             onChange={(e, val) => { setRv({ ...review, grade: val }); }}
-                            style={{ width:'35%' }}
+                            style={{ width:'45%' }}
                             renderInput={(params) => <TextField required {...params} label="Nota oferită" variant="outlined" />}>
                             </Autocomplete>
                         </Grid>
@@ -165,10 +176,9 @@ export default function AddReview() {
                         </Grid>
                         <Grid align="left" style={{ marginBottom:0, width:'125%', display:'flex', flexDirection:'row' }} className={classes.customAuto}>
                             
-
                             <FormControlLabel
                             control={
-                            <Checkbox
+                            <Checkbox disabled={ auth.user === null ? false : true}
                                 checked={review.anon}
                                 onChange={handleChange}
                                 name="checkedB"
@@ -190,21 +200,21 @@ export default function AddReview() {
 
                     </Paper>
                     <Grid align="center" style={{ marginTop:30, marginBottom:0 }}>
-                        <Button type="Submit" onClick={() => { setTimeout(() => {setOpen(true);}, 500)
-                            if (review.opinion !== "" && review.rv_title !== "" && review.grade !== Array(10))
-                                { setTimeout(() => { window.location.reload(); }, 3000); } 
-                            else { setTimeout(() => { setOpen(false); }, 10000); }
+                            <Button onClick={() => { setTimeout(() => {setOpen(true);}, 500)
+                            if (review.opinion !== "" && review.rv_title !== "" && review.grade !== "")
+                                { setTimeout(() => { console.log("review is ok"); redirect(); }, 3000);}
+                            else { setTimeout(() => { setOpen(false); }, 5000); }
                             }}
                             style={{ width:'35%'}} color='primary' variant="contained">Adaugă recenzie</Button>
                     </Grid>
                 </form>
             </Paper>
             <Collapse in={open} style={{ margin: 'auto', marginBottom:'30px', width:'35%' }}>
-                <Alert severity={review.opinion === "" && review.rv_title === "" ? "success" : "error"} action={ 
+                <Alert severity={review.opinion !== "" && review.rv_title !== "" && review.grade !== "" ? "success" : "error"} action={ 
                     <IconButton aria-label="close" color="inherit" size="small" onClick={() => {setOpen(false);}}>
                         <CloseIcon fontSize="inherit" />
                     </IconButton>
-                    }>{review.opinion === "" && review.rv_title === "" && review.grade === Array(10) ? 'Recenzia a fost postată!' : 'Recenzia nu a putut fi postată!'}
+                    }>{review.opinion !== "" && review.rv_title !== "" && review.grade !== "" ? 'Recenzia a fost postată!' : 'Recenzia nu a putut fi postată!'}
                 </Alert>
             </Collapse>
         </Grid>

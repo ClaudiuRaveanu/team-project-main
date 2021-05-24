@@ -71,9 +71,9 @@ const Navbar = (props) => {
             <Route path="/signin">
                 <LoginScreen/>
             </Route>
-            <PrivateRoute path="/books">
+            <Route path="/books">
                 <BooksView/>
-            </PrivateRoute>
+            </Route>
             <Route path="/add-review">
                 <AddReview/>
             </Route>
