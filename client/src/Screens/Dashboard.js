@@ -66,8 +66,6 @@ export default function Dashboard() {
 
     const auth = useAuth();
 
-    console.log(auth.user);
-
     const preventDefault = (event) => event.preventDefault();
   
     return (
@@ -85,7 +83,7 @@ export default function Dashboard() {
             </AppBar>
                 <Paper style={{ padding: '20px 20px', width: '50vw', margin: '20px auto', flexDirection:'column', display: 'flex' }} elevation={5}>
                     <Grid align="center" style={{ marginBottom:25 }}>
-                        <MaterialLink style={{ fontSize:'25px' }} underline="always" variant='string' color='textPrimary'>Bun venit, {auth.user}!</MaterialLink>
+                        <MaterialLink style={{ fontSize:'25px' }} underline="always" variant='string' color='textPrimary'>Bun venit, {auth.user.username}!</MaterialLink>
                     </Grid>
                     <Paper style={{padding: '0px 0px', width: 'auto', margin: '0px auto', textAlign: 'center', background: 'transparent', display: 'flex'}} elevation={0}>
 

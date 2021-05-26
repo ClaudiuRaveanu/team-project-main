@@ -43,10 +43,20 @@ router.patch('/update/:id', async (req,res) => {
 router.get('/random', async (req,res) => {
     const count = await Book.estimatedDocumentCount();
     const random = Math.floor(Math.random() * count);
-    const book = await Book.findOne().skip(random);
-    Book.find().limit(3);
+    var book = await Book.findOne({stock: {$gt: 0}}, { }).skip(random);
+    while (book === null) {
+        book = await Book.findOne({stock: {$gt: 0}}, { }).skip(Math.floor(Math.random() * count));
+    }
+    Book.find().limit(10);
     res.json(book);
     // console.log(`rand = ${book}`);
+})
+
+// GET number of books
+router.get('/total', async (req, res) => {
+    const total = await Book.estimatedDocumentCount();
+
+    res.json(total);
 })
 
 module.exports = router;

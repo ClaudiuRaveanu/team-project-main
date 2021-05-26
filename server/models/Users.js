@@ -1,7 +1,42 @@
 const mongoose = require('mongoose');
 
+const WishSchema = new mongoose.Schema({
+    book_id: { type: String, required: true, },
+    student_id: { type: String, required: true, },
+    add_date: {
+        type: String, // format: YYYY-MM-DD
+        required: true
+    },
+    pickup_date: {
+        type: String, // format: YYYY-MM-DD
+        required: true,
+    }
+});
+
+const BorrowSchema = new mongoose.Schema({
+    book_id: { type: String, required: true, },
+    student_id: { type: String, required: true, },
+    pickup_date: {
+        type: String, // format: YYYY-MM-DD
+        required: true,
+    }
+});
+
+const ReservationSchema = new mongoose.Schema({
+    book_id: { type: String, required: true, },
+    student_id: { type: String, required: true, },
+    reservation_date: {
+        type: String, // format: YYYY-MM-DD
+        required: true
+    },
+    pickup_date: {
+        type: String, // format: YYYY-MM-DD
+        required: true,
+    }
+});
+
 const UserSchema = new mongoose.Schema({
-    name: {
+    username: {
         type: String,
         required: true
     },
@@ -27,7 +62,10 @@ const UserSchema = new mongoose.Schema({
     phone_nr: {
         type: String,
         required: true
-    }
+    },
+    wishlist: [WishSchema],
+    reservations: [ReservationSchema],
+    borrowings: [BorrowSchema],
 });
 
 module.exports = mongoose.model('users',UserSchema);

@@ -121,7 +121,10 @@ const BooksView = () => {
                         </CardActionArea>
                         </Link>
                         <CardActions className={classes.actions}>
-                            <Button style={{ fontSize: "0.67vw", marginTop:"-10px" }} aria-label="wishlist" color="primary" variant="outlined">adaugă în wishlist</Button>
+                            <Button style={{ fontSize: "0.67vw", marginTop:"-10px" }} aria-label="wishlist" color="primary" variant="outlined"
+                                disabled={data[index].stock === 0 ? true : false}>
+                                    {data[index].stock === 0 ? 'stoc insuficient' : 'adaugă în wishlist'}
+                            </Button>
                         </CardActions>
                         
                     </Card>
