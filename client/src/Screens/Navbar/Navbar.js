@@ -56,9 +56,6 @@ const Navbar = (props) => {
               <LoginPage />
             </Route>
 
-            <Route exact path="/">
-                <DashboardScreen/>
-            </Route>
             <Route path="/reserve">
                 <BookReserve/>
             </Route>
@@ -88,6 +85,12 @@ const Navbar = (props) => {
             </Route>
             <Route path="/dashboard">
                 <Home />
+            </Route>
+
+
+
+            <Route exact path="/">
+                <DashboardScreen/>
             </Route>
             </Switch>
             
