@@ -52,7 +52,7 @@ const Navbar = (props) => {
                 <BookList />
             </Route>
 
-            <Route path="/login">
+            <Route path="/login-old">
               <LoginPage />
             </Route>
 
@@ -68,7 +68,7 @@ const Navbar = (props) => {
             <Route path="/register">
                 <RegisterScreen/>
             </Route>
-            <Route path="/signin">
+            <Route path="/login">
                 <LoginScreen/>
             </Route>
             <Route path="/books">

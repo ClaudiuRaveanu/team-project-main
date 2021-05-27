@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import { TextField, Grid,Paper, Button, Typography, Link, Checkbox, FormControlLabel } from '@material-ui/core';
+import { useAuth } from './AuthContext/use-auth';
+import { Redirect } from 'react-router-dom'
 
 // const initialValues = {
 //     email:'',
@@ -12,7 +15,31 @@ const LoginScreen = () => {
     const container = { display: 'flex', justifyContent: 'center', marginTop:40}
     // const btncontainer = { display: 'flex', justifyContent: 'center', }
 
-    const [checked, setChecked] = React.useState(false);
+    const urlUser = 'http://localhost:3000/Users/login'
+
+    const [user,setUser] = useState({
+        username:"",
+        password:""
+    });
+
+    const [redirectRef,setRedirectRef] = useState(false);
+    const [checked, setChecked] = useState(false);
+
+    const auth = useAuth();
+
+    const setRedirect = () => {
+        setRedirectRef(true);
+    }
+
+    if(redirectRef === true) {
+        return <Redirect  to='/' />
+    }
+
+    const getUser = () => {
+        // axios.get(urlUser, { withCredentials: true }).then( (res) => {console.log("success")}).catch((e) => {console.log(e)})
+        console.log(user);
+        auth.signin(user,setRedirect)
+    }
 
   const handleChange = (event) => {
     setChecked(event.target.checked);
@@ -26,16 +53,17 @@ const LoginScreen = () => {
             <Typography variant='h6' style={container}>Bibliotech UVT</Typography>
             <Paper elevation={5} style={paperStyle}>
                 <Grid align='center'>
-                    <Typography variant='h6'>Intrare în cont</Typography>
+                    <Typography variant='h6'>Intră în cont</Typography>
                 </Grid>
                 <form>
                 <TextField 
                 label="E-mail" 
-                type='Email' 
+                type='email' 
                 fullWidth
                 variant="outlined"
                 margin="normal"
                 required
+                onChange={ (e) => setUser({...user, username: e.target.value})}
                 autoComplete="email"
                 autoFocus
                 />
@@ -45,13 +73,14 @@ const LoginScreen = () => {
                 required
                 fullWidth
                 name="password"
+                onChange={ (e) => setUser({...user, password: e.target.value})}
                 label="Parolă"
                 type="password"
                 id="password"
                 autoComplete="current-password"
                 />
 
-                <FormControlLabel
+                {/* <FormControlLabel
                         control={
                         <Checkbox
                             checked={checked}
@@ -61,15 +90,15 @@ const LoginScreen = () => {
                         />
                         }
                         label="Ține-mă minte"
-                    />
+                    /> */}
                 
-                <Button type='Submit' style={btnStyle} variant='contained' color='primary'>Login</Button>
+                <Button style={btnStyle} variant='contained' color='primary' onClick={() => {getUser();}}>Conectare</Button>
                 <Grid container style={{marginTop:16}}>
-                    <Grid item xs>
+                    {/* <Grid item xs>
                         <Link href="/">
                         Ai uitat parola?
                         </Link>
-                    </Grid>
+                    </Grid> */}
                     <Grid xs align="right">
                         <Link href="/register">
                             Nu ai cont?

@@ -29,7 +29,7 @@ function useProvideAuth() {
       return axios.post(url,data, { withCredentials: true }).then( (res) => {
         setUser(res.data.username);
         setIsloggedin(true);
-        console.log(res.data.username);
+        console.log(res.data);
         callback(true);
         return res.data.username;
         } ).catch( (e) => console.log(e));

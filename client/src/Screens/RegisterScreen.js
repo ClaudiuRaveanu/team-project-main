@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { TextField, Grid,Paper, Button, Typography, Link } from '@material-ui/core';
+import { TextField, Grid,Paper, Button, Typography, Link, Snackbar } from '@material-ui/core';
 import MuiPhoneNumber from 'material-ui-phone-number';
+import { Redirect } from 'react-router-dom';
 
 import axios from 'axios';
 
@@ -24,13 +25,38 @@ const RegisterScreen = () => {
 
     const [user, setUser] = React.useState({
         username: "",
-        password: ""
+        password: "",
+        isAdmin: false,
+        email: "",
+        phone_nr: "",
+        id_nr: "",
+        surname: "",
+        wishlist: [],
+        reservations: [],
+        borrowings: []
     });
+
+    const [pass2, setPass2] = React.useState("");
+
+    const [errorMsg,setError] = React.useState("");
+
+    const [open, setOpen] = React.useState(false);
+
+    const handleClose = () => {
+        setOpen(false);
+    }
 
     const url = 'http://localhost:3000/users/register';
 
     const postUser = () => {
-        axios.post(url,user, { withCredentials: true }).then( (res) => console.log(user)).catch( (e) => console.log(e));
+        axios.post(url, user, { withCredentials: true }).then( (res) => {
+            setOpen(true);
+            if (res.data === 'Deja există un utilizator cu acest e-mail') {
+                setError('Deja există un utilizator cu acest e-mail');
+            } else {
+                setError("Utilizator înregistrat cu succes"); console.log(user);
+                setTimeout(<Redirect to="/login"></Redirect>, 3000)
+            }} ).catch( (e) => {console.log(e);});
     }
 
     return(
@@ -52,7 +78,7 @@ const RegisterScreen = () => {
                     id="firstName"
                     label="Nume"
                     autoFocus
-                    onChange={(e) => setUser({ ...user, username: e.target.value})}
+                    onChange={(e) => setUser({ ...user, surname: e.target.value})}
                     />
                     </Grid>
                     <Grid item xs>
@@ -64,6 +90,7 @@ const RegisterScreen = () => {
                     label="Prenume"
                     name="lastName"
                     autoComplete="lname"
+                    onChange={(e) => setUser({ ...user, username: e.target.value})}
                     />
                     </Grid>
                 </Grid>
@@ -75,6 +102,7 @@ const RegisterScreen = () => {
                 margin="normal"
                 required
                 autoComplete="email"
+                onChange={(e) => setUser({ ...user, email: e.target.value})}
                 autoFocus
                 />
                 <TextField 
@@ -96,6 +124,7 @@ const RegisterScreen = () => {
                 fullWidth
                 name="password2"
                 label="Rescrie parola"
+                onChange={(e) => {setPass2(e.target.value); if (user.password !== pass2) {setOpen(true); setError("Parolele nu se potrivesc")} else {setOpen(false);} }}
                 type="password"
                 id="password2"
                 autoComplete="current-password"
@@ -106,6 +135,7 @@ const RegisterScreen = () => {
                 id="phone"
                 type="phone"
                 autoComplete="phone"
+                onChange={(val) => {setUser({ ...user, phone_nr: val });}}
                 required
                 defaultCountry="ro"
                 variant="outlined"
@@ -118,6 +148,7 @@ const RegisterScreen = () => {
                 type='id_nr' 
                 fullWidth
                 variant="outlined"
+                onChange={(e) => setUser({ ...user, id_nr: e.target.value})}
                 margin="normal"
                 required
                 autoComplete="id_nr"
@@ -140,7 +171,7 @@ const RegisterScreen = () => {
                 
                 
                 <Grid container justify='flex-end' style={{marginTop:16}}>
-                    <Link href="/signin">
+                    <Link href="/login">
                         Ai deja un cont?
                     </Link>
                 </Grid>   
@@ -149,7 +180,16 @@ const RegisterScreen = () => {
 
                 </form>
 
-                <Button style={btnStyle} variant='contained' onClick={() => {postUser(); console.log(user.password);}} color='primary'>Trimite</Button>
+                <Button style={btnStyle} variant='contained' onClick={() => { setOpen(true);
+                    if (user.username === "" || user.password === "" || user.id_nr === "" || user.email === "" || user.surname === "")
+                        { setError("Nu au fost completate toate câmpurile"); }
+                    else if (user.phone_nr.length < 12 )
+                        { setError("Număr de telefon invalid"); }
+                    else
+                        { postUser(); }
+                    }} color='primary'>Trimite</Button>
+
+                <Snackbar open={open} onClose={handleClose} message={errorMsg}></Snackbar>
 
 
 

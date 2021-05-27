@@ -13,7 +13,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
 import IconButton from '@material-ui/core/IconButton';
 import axios from 'axios';
-import {Link} from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { useAuth } from './AuthContext/use-auth';
 
 export default function Dashboard() {
@@ -55,8 +55,6 @@ export default function Dashboard() {
 
     const url = 'http://localhost:3000/books/random';
 
-    // var random = Math.floor(Math.random() * 5);
-
     const [data,setData] = useState([]);
     useEffect(() => {
         axios.get(url, { withCredentials: true }).then( (res) => { 
@@ -83,7 +81,7 @@ export default function Dashboard() {
             </AppBar>
                 <Paper style={{ padding: '20px 20px', width: '50vw', margin: '20px auto', flexDirection:'column', display: 'flex' }} elevation={5}>
                     <Grid align="center" style={{ marginBottom:25 }}>
-                        <MaterialLink style={{ fontSize:'25px' }} underline="always" variant='string' color='textPrimary'>Bun venit, {auth.user.username}!</MaterialLink>
+                        <MaterialLink style={{ fontSize:'25px' }} underline="always" variant='string' color='textPrimary'>Bun venit, {auth.user}!</MaterialLink>
                     </Grid>
                     <Paper style={{padding: '0px 0px', width: 'auto', margin: '0px auto', textAlign: 'center', background: 'transparent', display: 'flex'}} elevation={0}>
 
@@ -95,7 +93,7 @@ export default function Dashboard() {
                             </Grid>
 
                             <Grid align="center" style={{ width:'100%', marginBottom:0 }}>
-                                <Paper elevation={3} style={{padding:'5px 5px'}}><Typography>Sugestia săptămânii</Typography></Paper>
+                                <Paper elevation={3} style={{padding:'5px 5px'}}><Typography>Sugestie</Typography></Paper>
                                 <Card className={classes.root} key={data._id}>
                                 <Link to = {{ pathname:'/view-book', state: { data: data } }} className={classes.actions} style={{ color: '#000' }}>
                                     <CardActionArea>

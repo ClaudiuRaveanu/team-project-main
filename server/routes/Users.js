@@ -9,8 +9,8 @@ const passport = require('passport');
 
 const LocalStrategy = passportLocal.Strategy
 
-passport.use(new LocalStrategy((username, password, done) => {
-    User.findOne({ username: username }, (err, user) => {
+passport.use(new LocalStrategy((email, password, done) => {
+    User.findOne({ email: email }, (err, user) => {
       if (err) throw err;
       if (!user) return done(null, false);
       bcrypt.compare(password, user.password, (err, result) => {
@@ -32,6 +32,7 @@ passport.use(new LocalStrategy((username, password, done) => {
   passport.deserializeUser((id, cb) => {
     User.findOne({ _id: id }, (err, user) => {
       const userInformation = {
+        email: user.email,
         username: user.username,
         isAdmin: user.isAdmin,
         id: user._id
@@ -42,23 +43,27 @@ passport.use(new LocalStrategy((username, password, done) => {
 // Routes
 router.post('/register', async (req,res) => {
     //username, password
-    const { username, password } = req?.body;
-    if(!username || !password, typeof username !== "string" || typeof password !== "string"){
-        res.send('Improper Values!');
+    const { username, password, id_nr, phone_nr, email, surname, } = req?.body;
+    if(username === "" || password === ""){
+        res.send('Nu au fost completate toate câmpurile');
         return;
     }
 
-    User.findOne({ username }, async (err,doc) => {
+    User.findOne({ email }, async (err,doc) => {
         if(err) throw err;
-        if(doc) res.send('User already exists');
+        if(doc) res.send('Deja există un utilizator cu acest e-mail');
         if(!doc){
             const hashedPassword = await bcrypt.hash(password,10)
             const newUser = new User({
                 username: username,
-                password: hashedPassword
+                password: hashedPassword,
+                id_nr: id_nr,
+                phone_nr: phone_nr,
+                email: email,
+                surname: surname
             });
             await newUser.save();
-            res.send('Success')
+            res.send('Utilizator înregistrat cu succes')
         }
     })
 
@@ -73,6 +78,12 @@ router.post('/login',passport.authenticate('local'), (req,res) => {
 
 router.get('/user', (req,res) => {
     res.send(req.user);
+})
+
+router.get('/get/:email', async (req, res) => {
+  const account = await User.findOne({ email: req.params.email });
+
+  res.json(account);
 })
 
 router.get("/logout", (req, res) => {
