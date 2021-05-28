@@ -22,12 +22,14 @@ export function ProvideAuth({ children }) {
 function useProvideAuth() {
     const [user, setUser] = useState(null);
     const [isloggedIn,setIsloggedin] = useState(false)
+    const [userId, setId] = useState(null);
     
     
     const signin = (data,callback) => {
       
       return axios.post(url,data, { withCredentials: true }).then( (res) => {
         setUser(res.data.username);
+        setId(res.data._id);
         setIsloggedin(true);
         console.log(res.data);
         callback(true);
@@ -55,7 +57,7 @@ function useProvideAuth() {
     useEffect(() => {
       axios.get(urlUser, { withCredentials: true }).then( (res) => {
         console.log(res.data.username)
-        setUser(res.data);
+        setUser(res.data.username);
         setIsloggedin(true);
       })
     }, []);

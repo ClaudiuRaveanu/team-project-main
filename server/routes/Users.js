@@ -80,8 +80,8 @@ router.get('/user', (req,res) => {
     res.send(req.user);
 })
 
-router.get('/get/:email', async (req, res) => {
-  const account = await User.findOne({ email: req.params.email });
+router.get('/currentUser', async (req, res) => {
+  const account = await User.findOne({ username: req.user.username });
 
   res.json(account);
 })
@@ -90,5 +90,5 @@ router.get("/logout", (req, res) => {
     req.logout();
     res.send("success")
   });
-
+ 
 module.exports = router;

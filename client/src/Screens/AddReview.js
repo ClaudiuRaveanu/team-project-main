@@ -12,7 +12,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Alert from '@material-ui/lab/Alert';
 import { useAuth } from './AuthContext/use-auth';
 
-export default function AddReview() {
+export default function AddReview(props) {
 
     const paperStyle = { padding: '0px 0px', width: 'auto', margin: '4px auto', textAlign: 'top-center', background: 'transparent', display: 'flex' }
     const btnStyle = { width: '12vw', background: '#3f51b5', color: '#FFFFFF', height: '2.4vw', marginLeft: '40px', marginRight: '40px'}
@@ -51,6 +51,7 @@ export default function AddReview() {
     }));
 
     const classes = useStyles();
+    const auth = useAuth();
 
     const grades = ['1','2','3','4','5','6','7','8','9','10'];
 
@@ -74,8 +75,6 @@ export default function AddReview() {
         publish_date:bk.publish_date,
         stock:bk.stock
     });
-
-    const auth = useAuth();
 
     const [review, setRv] = useState({
         book_id: book._id,
@@ -130,10 +129,10 @@ export default function AddReview() {
                 <Toolbar gutterbottom="true">
                     <Paper style={paperStyle} elevation={0}>
                         <Button href="/" style={btnStyle}>Acasă</Button>
-                        <Button href="/add-book" style={btnStyle}>Adaugă carte</Button>
+                        {/* <Button href="/add-book" style={btnStyle}>Adaugă carte</Button> */}
                         <Typography variant='h6' style={container}>Bibliotech UVT</Typography>
                         <Button href="/books" style={btnStyle}>Cărți</Button>
-                        <Button style={btnStyle} href="/book-a-book">Rezervă o carte</Button>
+                        {/* <Button style={btnStyle} href="/book-a-book">Rezervă o carte</Button> */}
                     </Paper>
                 </Toolbar>
             </AppBar>

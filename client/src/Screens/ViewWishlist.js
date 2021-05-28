@@ -55,10 +55,10 @@ export default function ViewWishlist() {
                 <Toolbar gutterbottom="true">
                     <Paper style={paperStyle} elevation={0}>
                         <Button href="/" style={btnStyle}>Acasă</Button>
-                        <Button href="/books" style={btnStyle}>Cărți</Button>
                         <Typography variant='h6' style={container}>Bibliotech UVT</Typography>
-                        <Button href="/add-book" style={btnStyle}>Adaugă carte</Button>
-                        <Button style={btnStyle} href="/book-a-book">Rezervă o carte</Button>
+                        {/* <Button href="/add-book" style={btnStyle}>Adaugă carte</Button> */}
+                        {/* <Button style={btnStyle} href="/book-a-book">Rezervă o carte</Button> */}
+                        <Button href="/books" style={btnStyle}>Cărți</Button>
                     </Paper>
                 </Toolbar>
             </AppBar>

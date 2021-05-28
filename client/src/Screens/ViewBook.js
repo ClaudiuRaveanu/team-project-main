@@ -79,10 +79,10 @@ export default function ViewBook() {
                 <Toolbar gutterbottom="true">
                     <Paper style={paperStyle} elevation={0}>
                         <Button href="/" style={btnStyle}>Acasă</Button>
-                        <Button href="/wishlist" style={btnStyle}>Wishlist</Button>
+                        {/* <Button href="/wishlist" style={btnStyle}>Wishlist</Button> */}
                         <Typography variant='h6' style={container}>Bibliotech UVT</Typography>
                         <Button href="/books" style={btnStyle}>Cărți</Button>
-                        <Button style={btnStyle} href="/book-a-book">Rezervă o carte</Button>
+                        {/* <Button style={btnStyle} href="/book-a-book">Rezervă o carte</Button> */}
                     </Paper>
                 </Toolbar>
             </AppBar>

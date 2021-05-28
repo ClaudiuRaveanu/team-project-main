@@ -15,10 +15,11 @@ import IconButton from '@material-ui/core/IconButton';
 import axios from 'axios';
 import { Link, Redirect } from 'react-router-dom';
 import { useAuth } from './AuthContext/use-auth';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 export default function Dashboard() {
 
-    const paperStyle = { padding: '0px 0px', width: 'auto', margin: '0px auto', textAlign: 'center', background: 'transparent', display: 'flex' }
+    const paperStyle = { padding: '0px 0px', width: 'auto', margin: '0px auto', textAlign: 'center', justifyContent: "space-between", background: 'transparent', display: 'flex' }
     const btnStyle = { width: '12vw', background: '#3f51b5', color: '#FFFFFF', height: '2.4vw', marginLeft: '40px', marginRight: '40px'}
     // const boxStyle = { background:'#FFFFFF', textAlign:'center', padding:'2px 2px', marginTop:9, justifyContent:'center', height:500 }
     // const narrowBox = { background:'#FFFFFF', textAlign:'center', padding:'0px 10px', width:'15%', margin:0, height:'100%'};
@@ -71,17 +72,28 @@ export default function Dashboard() {
             <AppBar position='static' style={{background: '#757de8', marginTop: 'auto', justifyContent:'center', flexDirection:'column', textAlign:'center'}}>
                 <Toolbar gutterbottom="true">
                     <Paper style={paperStyle} elevation={0}>
-                        <Button style={btnStyle} href="/reserve">Rezervă o carte</Button>
-                        <Button href="/wishlist" style={btnStyle}>Wishlist</Button>
+                        {/* <Button style={btnStyle} href="/reserve" variant="contained">Rezervă o carte</Button> */}
+                        <Button href="/wishlist" style={btnStyle} variant="contained">Wishlist</Button>
                         <Typography variant='h6' display='block' style={container}>Bibliotech UVT</Typography>
-                        <Button href="/add-book" style={btnStyle}>Adaugă carte</Button>
-                        <Button href="/books" style={btnStyle}>Cărți</Button>
+                        {/* <Button href="/add-book" style={btnStyle} variant="contained">Adaugă carte</Button> */}
+                        <Button href="/books" style={btnStyle} variant="contained">Cărți</Button>
                     </Paper>
+                    { (auth.user === undefined) ? null : <Paper style={{ textAlign: "right" }}>
+                        <Button style={{ fontSize: "0.7vw"}} color="primary" variant="contained" 
+                            onClick={() => {auth.signout(); window.location.reload();}} startIcon={<ExitToAppIcon />}>Ieși din cont</Button>
+                    </Paper>}
                 </Toolbar>
             </AppBar>
                 <Paper style={{ padding: '20px 20px', width: '50vw', margin: '20px auto', flexDirection:'column', display: 'flex' }} elevation={5}>
                     <Grid align="center" style={{ marginBottom:25 }}>
-                        <MaterialLink style={{ fontSize:'25px' }} underline="always" variant='string' color='textPrimary'>Bun venit, {auth.user}!</MaterialLink>
+                        { auth.user !== undefined ?
+                            <Typography style={{ fontSize:'25px' }}>
+                                <u>Bun venit, {auth.user}</u>!
+                            </Typography> :
+                            <MaterialLink style={{ fontSize: '25px'}} href="/login" underline="always">
+                                Nu sunteți logat. Intrați în cont.
+                            </MaterialLink>
+                        }
                     </Grid>
                     <Paper style={{padding: '0px 0px', width: 'auto', margin: '0px auto', textAlign: 'center', background: 'transparent', display: 'flex'}} elevation={0}>
 
@@ -89,7 +101,7 @@ export default function Dashboard() {
                         <Paper style={{padding: '0px 0px', width: '100%', margin: '0px auto', flexDirection:'column', display: 'flex'}} elevation={0}>
 
                             <Grid align='center' style={{ width:'100%', marginBottom:20 }}>
-                                <Typography>Astăzi nu aveți nicio carte de predat.</Typography>
+                                <Typography>{ auth.user === undefined ? 'Bine ați venit pe site-ul Bibliotech UVT!' : 'Astăzi nu aveți nicio carte de predat.'}</Typography>
                             </Grid>
 
                             <Grid align="center" style={{ width:'100%', marginBottom:0 }}>
@@ -109,7 +121,9 @@ export default function Dashboard() {
                                     </CardActionArea>
                                     </Link>
                                     <CardActions>
-                                        <Button className={classes.actions} startIcon={<AddShoppingCart/ >} color="primary" variant="outlined" style={{ fontSize:"0.9vw"}} fullWidth>
+                                        <Button className={classes.actions} startIcon={<AddShoppingCart/ >} 
+                                            color="primary" variant="outlined" style={{ fontSize:"0.9vw"}} fullWidth
+                                            disabled={false}>
                                             Adaugă în wishlist
                                         </Button>
                                     </CardActions>

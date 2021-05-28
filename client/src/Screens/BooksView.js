@@ -11,10 +11,11 @@ import IconButton from '@material-ui/core/IconButton';
 import ShoppingCart from '@material-ui/icons/ShoppingCart';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { useAuth } from './AuthContext/use-auth'
 
 const url = 'http://localhost:3000/Books'
+const userUrl = 'http://localhost:3000/Users/currentUser'
 
 const BooksView = () => {
 
@@ -26,6 +27,8 @@ const BooksView = () => {
 
     // let day = getCurrentDate('-');
     // const datas = [{ startDate: '2018-11-01T09:45', endDate: '2018-11-01T11:00', title: 'Just for the sake of working' }];
+
+    const auth = useAuth();
 
     const useStyles = makeStyles({
         root: {
@@ -51,17 +54,24 @@ const BooksView = () => {
           },
     });
 
-    const [book,setBook] = useState({
-        title: "",
-        author:"",
-        editure:"",
-        description:"",
-        avg_grade:"",
-        pages:"",
-        reviews:"",
-        publish_date:"",
-        genre:""
+    const [access, setAccess] = useState(true);
+
+    const [userData, setUser] = useState([]);
+    var clicks = useState([]);
+
+    const [booksNr, setNumber] = useState(0);
+
+    const [wish, setWish] = useState({
+        book_id: "",
+        student_id: ""
     });
+
+    useEffect(() => {
+        axios.get('http://localhost:3000/Books/total', {withCredentials: true}).then((res) => {
+            setNumber(res.data);
+            console.log(booksNr);
+        }).catch((e) => {console.log(e)});
+    }, [])
 
     const classes = useStyles();
 
@@ -72,11 +82,30 @@ const BooksView = () => {
         }).catch( (e) => console.log(e) )
     },[])
 
-    const auth = useAuth();
-
-    console.log(auth.user);
+    useEffect(() => {
+        if (auth.user !== null) {
+            axios.get(userUrl, {withCredentials: true}).then( (res) => {
+                setUser(res.data);
+                console.log(userData);
+            }).catch( (e) => console.log(e) ) 
+        } else { setAccess(false) }
+    }, [])
 
     const preventDefault = (event) => event.preventDefault();
+
+    for (var i = 0; i < booksNr; i++)
+    {
+        clicks.push({ clicked: 0 });
+    }
+
+    const check = () => {
+        if (auth.user === null || auth.user === undefined) {
+            setTimeout(<Redirect to="http://localhost:5000/login"></Redirect>, 2000);
+        } else {
+            // userData.wishlist.push(wish);
+            console.log(wish);
+        }
+    }
     
     return (
         <Grid container>
@@ -86,9 +115,9 @@ const BooksView = () => {
                 <Toolbar gutterbottom="true">
                     <Paper style={paperStyle} elevation={0}>
                         <Button href="/" style={btnStyle}>Acasă</Button>
-                        <Button href="/wishlist" style={btnStyle}>Wishlist</Button>
+                        {/* <Button href="/wishlist" style={btnStyle}>Wishlist</Button> */}
                         <Typography variant='h6' style={container}>Bibliotech UVT</Typography>
-                        <Button href="/add-book" style={btnStyle}>Adaugă carte</Button>
+                        {/* <Button href="/add-book" style={btnStyle}>Adaugă carte</Button> */}
                         <Button style={btnStyle} href="/book-a-book">Rezervă o carte</Button>
                     </Paper>
                 </Toolbar>
@@ -121,8 +150,11 @@ const BooksView = () => {
                         </CardActionArea>
                         </Link>
                         <CardActions className={classes.actions}>
-                            <Button style={{ fontSize: "0.67vw", marginTop:"-10px" }} aria-label="wishlist" color="primary" variant="outlined"
-                                disabled={data[index].stock === 0 ? true : false}>
+                            <Button style={{ fontSize: "0.67vw", marginTop:"-10px" }} aria-label="wishlist" 
+                                color={auth.user === undefined ? "secondary" : "primary"} variant="outlined"
+                                disabled={data[index].stock === 0 ? true : false}
+                                onClick={() => { check(); setWish({ ...wish, book_id: data[index]._id });
+                                    setWish({ ...wish, student_id: (auth.user === undefined ? "anonim" : userData._id) }); }}>
                                     {data[index].stock === 0 ? 'stoc insuficient' : 'adaugă în wishlist'}
                             </Button>
                         </CardActions>
