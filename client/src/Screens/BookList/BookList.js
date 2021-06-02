@@ -82,7 +82,7 @@ const BookList = () => {
                                     {  
                                      <Link 
                                         to = {{
-                                                pathname:'/details',
+                                                pathname:'/bookDetails',
                                                 state:
                                                 { data: data[index] }
                                         }}

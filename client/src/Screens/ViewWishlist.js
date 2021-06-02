@@ -13,9 +13,9 @@ import axios from 'axios';
 // import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
 // import IconButton from '@material-ui/core/IconButton';
 
-const url = 'http://localhost:3000/Books/get/'
 const userUrl = 'http://localhost:3000/Users/currentUser'
-const wishes = 'http://localhost:3000/Users/wishlist/'
+const wishes = 'http://localhost:3000/Users/wishlist'
+const updateUser = 'http://localhost:3000/Users/deleteWishlist'
 
 export default function ViewWishlist() {
 
@@ -64,35 +64,36 @@ export default function ViewWishlist() {
 
 
     useEffect(() => {
-        axios.get('http://localhost:3000/Books/total', {withCredentials: true}).then((res) => {
+        async function call3(){axios.get('http://localhost:3000/Books/total', {withCredentials: true}).then((res) => { 
             setNumber(res.data);
             console.log(booksNr);
-        }).catch((e) => {console.log(e)});
-    }, [booksNr])
+        }).catch((e) => {console.log(e)});}
 
-    useEffect(() => {
-        if (auth.user !== undefined) {
-            axios.get(userUrl, {withCredentials: true}).then( (res) => {
-                setUser(res.data);
-            }).catch( (e) => console.log(e) ) 
-        }
-    }, [auth.user, userData])
-
-    useEffect(() => {
-        if (auth.user !== undefined && userData.wishlist !== undefined) {
-                axios.get(wishes + userData._id, { withCredentials: true }).then( (res) => { 
-                    setWish(res.data.wishlist)
+        async function call() {
+            
+                axios.get(wishes, { withCredentials: true }).then( (res) => {
+                    setWish(res.data)
+                    console.log(res.data)
                 }).catch( (e) => console.log(e) )
+           
         }
-    },[auth.user, userData._id, userData.wishlist])
+
+        async function call2(){if (auth.user !== undefined) {
+            axios.get(userUrl, {withCredentials: true}).then( (res) => {
+                setUser(res.data); call();
+            }).catch( (e) => console.log(e) ) 
+        }}
+
+        call2();
+        call3();
+    }, []);
 
     const classes = useStyles();
 
-    useEffect(() => {
-        if (auth.user !== undefined && userData.wishlist !== undefined && userData.wishlist.length !== 0) {
-            axios.get(wishes + userData._id, {withCredentials: true}).then((res) => { setData(res.data) }).catch((e) => {console.log(e)})
-        }
-    }, [auth.user, userData._id, userData.wishlist])
+    const handleDeleteReview = async (request) =>{
+
+        await axios.patch(updateUser,request).then( (res) => console.log(res)).catch( (e) => console.log(e))
+    }
     
     return (
         <Grid container>
@@ -112,16 +113,16 @@ export default function ViewWishlist() {
             </Grid>
 
             { (auth.user === undefined) ? 
-                <Paper style={{ margin: "auto", width: 'auto', padding: '0', marginTop: 30,
+                <Paper style={{ margin: "auto", width: 'auto', padding: '0',
                 background: 'transparent', overflow:'auto', maxWidth:'100%', textAlign: 'center' }} elevation={0}>
-                <MaterialLink style={{ fontSize: '25px'}} color="secondary" href="/login" underline="always">
+                <MaterialLink style={{ fontSize: '25px', marginTop: 30}} color="secondary" href="/login" underline="always">
                     Wishlist-ul nu a putut fi găsit fiindcă nu sunteți logat. Intrați în cont.
                 </MaterialLink> 
                 </Paper>
                 
-                : (userData.wishlist === undefined) ? 
+                : (wishBooks === undefined) ? 
 
-                <Paper style={{ margin: "auto", width: 'auto', padding: '0', marginTop: 30,
+                <Paper style={{ margin: "auto", width: 'auto', padding: '0',
                 background: 'transparent', overflow:'auto', maxWidth:'100%', textAlign: 'center' }} elevation={0}>
                 <MaterialLink style={{ fontSize: '25px'}} variant="String" underline="always">
                     Wishlist-ul dumneavoastră nu conține nicio carte.
@@ -130,7 +131,7 @@ export default function ViewWishlist() {
 
                 :
             
-            <Paper style={{ margin: "auto", width: 'auto', padding: '0',
+            <Paper style={{ margin: "auto", width: '90%', padding: '0',
                 background: 'transparent', overflow:'auto', maxWidth:'100%', textAlign: 'center' }} elevation={0}>
                 
 
@@ -140,29 +141,43 @@ export default function ViewWishlist() {
 
                 <Grid container justify="space-evenly" alignItems="flex-start" direction="row" style={{ background:"transparent", width:"90%", margin:"auto" }}>
 
-                { data.map( (carte, index) => (
+                { wishBooks.map( (carte, index) => (
 
                     <Grid item xs={2} key={index} style={{margin:"1.3vw"}}>
 
                     <Card className={classes.root} style={{ margin: "auto" }}>
 
-                        <Link to = {{ pathname:'/view-book', state: { data: data[index] } }} className={classes.actions} color="primary">
+                        <Link to = {{ pathname:'/view-book', state: { data: wishBooks[index] } }} className={classes.actions} color="primary">
 
                         <CardActionArea style={{ maxWidth:"14vw", minWidth:"12vw" }}>
-                            <CardMedia className={classes.media} image={data[index].cover} title={data[index].title}></CardMedia>
+                            <CardMedia className={classes.media} image={wishBooks[index].cover} title={wishBooks[index].title}></CardMedia>
                                 <CardContent>
                                     <Typography gutterBottom color="textPrimary" variant='body1' align="center" component="h2" style={{ height:"5vw", fontSize:"1.1vw" }}>
-                                        {data[index].title}
+                                        {wishBooks[index].title}
                                     </Typography>
                                     <Typography noWrap variant="body2" component="p" style={{ color:"#335ebd", marginBottom:'0px', marginTop:"8px", fontSize:"0.97vw" }}>
-                                        {data[index].author}
+                                        {wishBooks[index].author}
                                     </Typography>
                                 </CardContent>
                         </CardActionArea>
                         </Link>
                     <CardActions>
                         <Button style={{ fontSize: "0.8vw", marginTop:"-10px" }} fullWidth aria-label="wishlist" color="secondary" variant="outlined"
-                            onClick={() => console.log(data) }>Nu o mai vreau</Button>
+                            onClick={() => {
+                                console.log(wishBooks)
+
+                                console.log(index);
+                                console.log(userData);
+                                const request = {
+                                    _id:userData._id,
+                                    wishlist_id: userData.wishlist[index]._id
+                                }
+                                console.log(userData.wishlist[index]._id);
+                                userData.wishlist?.splice(index);
+                                handleDeleteReview(request);
+                                window.location.reload();
+                                //axios.patch(updateUser + wishBooks[index]._id, userData, { withCredentials: true }).then( (res) => { console.log(res) } ).catch( (e) => { console.log(e) });
+                            } }>Nu o mai vreau</Button>
                     </CardActions>
                 </Card>
 

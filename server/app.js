@@ -17,7 +17,8 @@ mongoose.connect('mongodb+srv://Danny:DannyHell1234@maincluster.hydae.mongodb.ne
 { 
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useCreateIndex: true
+    useCreateIndex: true,
+    useFindAndModify: false
 }
 );
 

@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
 import { TextField, Typography, Button, Grid, Grow, Container, Paper} from '@material-ui/core';
-import { useLocation , useHistory} from 'react-router-dom';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import { useLocation , useHistory, generatePath} from 'react-router-dom';
 import useStyles from './styles';
 import axios from 'axios';
+import { ListItemText } from '@material-ui/core';
 
 const updateURL = 'http://localhost:3000/books/update/';
-const deleteURL = 'http://localhost:3000/books/delete/'
+const deleteURL = 'http://localhost:3000/books/delete/';
+const deleteReviewuRL = 'http://localhost:3000/Books/deleteReview'
 
 const BookDetail = (  ) => {
     const classes = useStyles();
     const location = useLocation();
     const history = useHistory();
     const data =  location.state?.data;
+    console.log(data)
+    
+    const [show,setShow] = useState(false)
     
     const [book,setBook] = useState({
         title: data.title,
@@ -26,6 +33,12 @@ const BookDetail = (  ) => {
         publish_date:data.publish_date,
         stock:data.stock
     });
+    const [review,setReview] = useState(
+        {
+            _id: book._id,
+            review_id: ''
+        }
+    );
 
     const postBook = (event) => {
         event.preventDefault();
@@ -37,6 +50,61 @@ const BookDetail = (  ) => {
         axios.delete(deleteURL + data._id, { withCredentials: true }).then( (res) => console.log(res)).catch( (e) => console.log(e));
         history.push('/');
     }
+    const handleDeleteReview = async (request) =>{
+        
+        await axios.patch(deleteReviewuRL,request).then( (res) => console.log(res)).catch( (e) => console.log(e))
+    }
+
+    const ListReview = ({data, index}) => {
+        return (
+            
+        
+        <ListItem key={index}>
+            <ListItemText
+            primary={data.rv_title}
+            secondary={data._id}
+            />
+            <button onClick={(event) => {
+                event.preventDefault();
+                console.log(data)
+                const request = {
+                    _id:data.book_id,
+                    review_id:data._id
+                }
+                handleDeleteReview(request);
+                
+                }}>Delete</button>
+        </ListItem>
+        
+        )
+    }
+   
+    const reviewList = () => {
+        
+        return (
+            <div className={classes.fileInput}>
+            <List>
+                {book.reviews.map( (item,index) => {
+                    
+                    
+                   return <ListReview data={item} index={index}/>
+                    
+                    
+                })}
+            </List>
+            </div>
+        );
+    }
+    const openList =() => {
+        return(
+            <>
+        <h1 className={classes.fileInput} onClick={()=>setShow(!show)}>Reviews</h1>
+        {show == true ? reviewList():null}
+        </>
+        );
+        
+    }
+     
     
     return (
         
@@ -118,8 +186,21 @@ const BookDetail = (  ) => {
             fullWidth
             label="Stoc"
             value={book.stock}
-            onChange={(e) => setBook({ ...book, publish_date: e.target.value})}
+            onChange={(e) => setBook({ ...book, stock: e.target.value})}
             />
+            <TextField
+            name="avg_grade" 
+            variant='outlined'
+            fullWidth
+            label="Average Grade"
+            value={book.avg_grade}
+            onChange={(e) => setBook({ ...book, avg_grade: e.target.value})}
+            />
+
+            <>
+             
+             {openList()}
+             </>
 
             <Button
             className={classes.buttonSubmit}
@@ -146,7 +227,7 @@ const BookDetail = (  ) => {
             variant='contained'
             color='primary'
             size='large'
-            onClick={() => history.push('/dashboard')}
+            onClick={() => history.push('/admin')}
             >Get Back</Button>
         </Container>
         

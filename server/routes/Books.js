@@ -39,6 +39,13 @@ router.patch('/update/:id', async (req,res) => {
 
     res.json(update);
 });
+
+// DELETE Review
+router.patch('/deleteReview', async (req,res) =>{
+    const result = await Book.findOneAndUpdate( {_id: req.body._id},{$pull:{reviews:{_id:req.body.review_id}}});
+    res.json(result);
+})
+
 // GET random book
 router.get('/random', async (req,res) => {
     const count = await Book.estimatedDocumentCount();

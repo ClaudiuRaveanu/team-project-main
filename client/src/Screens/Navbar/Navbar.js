@@ -12,6 +12,7 @@ import {
 import Home from '../Home/Home';
 import LoginPage from '../Auth/Login';
 import BookDetail from '../BookDetail/BookDetail';
+import UserDetail from '../Users/UserDetail';
 import AddBook from '../Form/Form';
 import BookList from '../BookList/BookList';
 import { useAuth } from '../AuthContext/use-auth';
@@ -80,12 +81,21 @@ const Navbar = (props) => {
             <Route path="/view-book">
                 <ViewBook />
             </Route>
-            <Route path="/details">
+            <Route path="/bookDetails">
                 <BookDetail />
             </Route>
-            <Route path="/dashboard">
-                <Home />
+            <Route path="/UserDetails">
+                <UserDetail />
             </Route>
+
+
+            {
+                auth.data?.isAdmin === true ?
+                <Route path="/admin">
+                    <Home />
+                </Route> :
+                null
+            }
 
 
 

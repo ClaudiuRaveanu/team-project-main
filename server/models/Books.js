@@ -21,6 +21,6 @@ const BookSchema = new mongoose.Schema({
     publish_date: {type: Number, required: true},
     stock: {type: Number, required: true},
     reviews: [ReviewSchema]
-});
+});  
 
 module.exports = mongoose.model('Books',BookSchema);

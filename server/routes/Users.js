@@ -93,12 +93,20 @@ router.patch('/update/:id', async (req, res) => {
     const account = await User.updateOne({ _id: req.params.id }, { $set: req.body });
 
     res.json(account)
+}) 
+
+router.get('/getUsers', async (req,res) => {
+  const users = await User.find({}, (err,data) => {
+    if(err) throw err;
+    return data;
+  })
+  res.send(users);
 })
 
-router.get('/wishlist/:id', async (req, res) => {
-  const wishes = await User.findOne({ _id: req.params.id }, { wishlist: 1, _id: 0 });
+router.get('/wishlist', async (req, res) => {
+  const wishes = await User.findOne({ username: req.user.username }, { wishlist: 1 });
 
-  let books = [];
+  let books = []; 
 
   //console.log(wishes.wishlist.length);
 
@@ -111,8 +119,15 @@ router.get('/wishlist/:id', async (req, res) => {
   res.json(books);
 })
 
+// DELETE wishlist
+router.patch('/deleteWishlist', async (req,res) =>{
+  const result = await User.findOneAndUpdate( { _id: req.body._id },{$pull:{wishlist:{_id:req.body.wishlist_id}}});
+  // res.send(req.body);
+  res.json(result);
+})
+
 router.get("/logout", (req, res) => {
-    req.logout();
+    req.logout(); 
     res.send("success")
   });
  

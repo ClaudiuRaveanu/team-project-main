@@ -21,6 +21,7 @@ export function ProvideAuth({ children }) {
 
 function useProvideAuth() {
     const [user, setUser] = useState(null);
+    const [data, setData] = useState(null);
     const [isloggedIn,setIsloggedin] = useState(false)
     const [userId, setId] = useState(null);
     
@@ -31,6 +32,7 @@ function useProvideAuth() {
         setUser(res.data.username);
         setId(res.data._id);
         setIsloggedin(true);
+        setData(res.data)
         console.log(res.data);
         callback(true);
         return res.data.username;
@@ -56,8 +58,9 @@ function useProvideAuth() {
     
     useEffect(() => {
       axios.get(urlUser, { withCredentials: true }).then( (res) => {
-        console.log(res.data.username)
+        console.log(res.data)
         setUser(res.data.username);
+        setData(res.data)
         setIsloggedin(true);
       })
     }, []);
@@ -65,6 +68,7 @@ function useProvideAuth() {
     // Return the user object and auth methods
     return {
       user,
+      data,
       signin,
       signup,
       signout,

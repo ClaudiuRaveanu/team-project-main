@@ -2,12 +2,10 @@ const mongoose = require('mongoose');
 
 const WishSchema = new mongoose.Schema({
     book_id: { type: String, required: true, },
-    student_id: { type: String, required: true, }
 });
 
 const BorrowSchema = new mongoose.Schema({
     book_id: { type: String, required: true, },
-    student_id: { type: String, required: true, },
     pickup_date: {
         type: String, // format: YYYY-MM-DD
         required: true,
@@ -16,12 +14,11 @@ const BorrowSchema = new mongoose.Schema({
 
 const ReservationSchema = new mongoose.Schema({
     book_id: { type: String, required: true, },
-    student_id: { type: String, required: true, },
-    reservation_date: {
+    date: {
         type: String, // format: YYYY-MM-DD 
         required: true
     },
-    pickup_date: {
+    pickup: {
         type: String, // format: YYYY-MM-DD
         required: true,
     }
@@ -42,14 +39,14 @@ const UserSchema = new mongoose.Schema({
         type: String,
         unique: true,
         required: true
-    },
+    }, 
     surname: {
         type: String,
         required: true
     },
     id_nr: {
         type: String,
-        required: true
+        required: true 
     },
     phone_nr: {
         type: String,

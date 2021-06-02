@@ -84,9 +84,9 @@ export default function Dashboard() {
         <Grid>
             <AppBar position='static' style={{background: '#757de8', marginTop: 'auto', justifyContent:'center', flexDirection:'column', textAlign:'center'}}>
                 <Toolbar gutterbottom="true">
-                    { (auth.user === undefined && userData.isAdmin !== true) ? null : <Paper style={{ textAlign: "left" }}>
+                    { (auth.user === undefined || userData.isAdmin !== true) ? null : <Paper style={{ textAlign: "left" }}>
                         <Button style={{ fontSize: "0.7vw"}} color="primary" variant="contained" 
-                            href="/dashboard" startIcon={<Settings />}>Panou admini</Button>
+                            href="/admin" startIcon={<Settings />}>Panou admini</Button>
                     </Paper>}
                     <Paper style={paperStyle} elevation={0}>
                         {/* <Button style={btnStyle} href="/reserve" variant="contained">Rezervă o carte</Button> */}
@@ -106,7 +106,7 @@ export default function Dashboard() {
                         { auth.user !== undefined ?
                             <Typography style={{ fontSize:'25px' }}>
                                 <u>Bun venit, {auth.user}</u>!
-                            </Typography> :
+                            </Typography> : 
                             <MaterialLink style={{ fontSize: '25px'}} href="/login" underline="always">
                                 Nu sunteți logat. Intrați în cont.
                             </MaterialLink>
@@ -118,7 +118,12 @@ export default function Dashboard() {
                         <Paper style={{padding: '0px 0px', width: '100%', margin: '0px auto', flexDirection:'column', display: 'flex'}} elevation={0}>
 
                             <Grid align='center' style={{ width:'100%', marginBottom:20 }}>
-                                <Typography>{ auth.user === undefined ? 'Bine ați venit pe site-ul Bibliotech UVT!' : 'Astăzi nu aveți nicio carte de predat.'}</Typography>
+                                { auth.user === undefined ? 
+                                    <Typography>Bine ați venit pe site-ul Bibliotech UVT!</Typography> :
+                                    <Typography>
+                                       Aveți {userData.borrowings === undefined ? 0 : userData.borrowings.length} cărți de predat și {userData.reservations === undefined ? 0 : userData.reservations.length} cărți de ridicat!
+                                    </Typography>
+                                }
                             </Grid>
 
                             <Grid align="center" style={{ width:'100%', marginBottom:0 }}>

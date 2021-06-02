@@ -108,6 +108,7 @@ const Home = () => {
              
             <button onClick={() => {
                 auth.signout()
+                history.push('/login')
                 
                 }}>Logout</button>
                 
