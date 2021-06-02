@@ -1,5 +1,5 @@
-import React from 'react';
-import {Grid, Typography, Paper, Toolbar, AppBar, List, ListItem, Link } from '@material-ui/core';
+import React, {useState, useEffect } from 'react';
+import {Grid, Typography, Paper, Toolbar, AppBar, List, ListItem, Link as MaterialLink } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -7,8 +7,15 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
+import { Link, Redirect } from 'react-router-dom';
+import { useAuth } from './AuthContext/use-auth'
+import axios from 'axios';
 // import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
 // import IconButton from '@material-ui/core/IconButton';
+
+const url = 'http://localhost:3000/Books/get/'
+const userUrl = 'http://localhost:3000/Users/currentUser'
+const wishes = 'http://localhost:3000/Users/wishlist/'
 
 export default function ViewWishlist() {
 
@@ -21,10 +28,12 @@ export default function ViewWishlist() {
     // let day = getCurrentDate('-');
     // const datas = [{ startDate: '2018-11-01T09:45', endDate: '2018-11-01T11:00', title: 'Just for the sake of working' }];
 
+    const auth = useAuth();
+
     const useStyles = makeStyles({
         root: {
-            maxWidth: 270,
-            margin: '0.9vw',
+            maxWidth: '14vw',
+            width: '12vw',
         },
         media: {
             height: 0,
@@ -37,7 +46,7 @@ export default function ViewWishlist() {
             justifyContent: 'center',
         },
         actions: {
-            display: 'flex',
+            fullWidth: true,
             justifyContent: 'center',
         },
         customWidth: {
@@ -45,7 +54,45 @@ export default function ViewWishlist() {
           },
     });
 
+    const [userData, setUser] = useState([]);
+
+    const [data, setData] = useState([]);
+
+    const [wishBooks, setWish] = useState([]);
+
+    const [booksNr, setNumber] = useState(0);
+
+
+    useEffect(() => {
+        axios.get('http://localhost:3000/Books/total', {withCredentials: true}).then((res) => {
+            setNumber(res.data);
+            console.log(booksNr);
+        }).catch((e) => {console.log(e)});
+    }, [booksNr])
+
+    useEffect(() => {
+        if (auth.user !== undefined) {
+            axios.get(userUrl, {withCredentials: true}).then( (res) => {
+                setUser(res.data);
+            }).catch( (e) => console.log(e) ) 
+        }
+    }, [auth.user, userData])
+
+    useEffect(() => {
+        if (auth.user !== undefined && userData.wishlist !== undefined) {
+                axios.get(wishes + userData._id, { withCredentials: true }).then( (res) => { 
+                    setWish(res.data.wishlist)
+                }).catch( (e) => console.log(e) )
+        }
+    },[auth.user, userData._id, userData.wishlist])
+
     const classes = useStyles();
+
+    useEffect(() => {
+        if (auth.user !== undefined && userData.wishlist !== undefined && userData.wishlist.length !== 0) {
+            axios.get(wishes + userData._id, {withCredentials: true}).then((res) => { setData(res.data) }).catch((e) => {console.log(e)})
+        }
+    }, [auth.user, userData._id, userData.wishlist])
     
     return (
         <Grid container>
@@ -63,60 +110,71 @@ export default function ViewWishlist() {
                 </Toolbar>
             </AppBar>
             </Grid>
-            
-            <Paper style={{padding: '0px 0px', width: 'auto', margin: '4px auto', textAlign: 'top-center', background: 'transparent', display: 'flex', overflow:'auto', maxWidth:'100%' }} elevation={0}>
+
+            { (auth.user === undefined) ? 
+                <Paper style={{ margin: "auto", width: 'auto', padding: '0', marginTop: 30,
+                background: 'transparent', overflow:'auto', maxWidth:'100%', textAlign: 'center' }} elevation={0}>
+                <MaterialLink style={{ fontSize: '25px'}} color="secondary" href="/login" underline="always">
+                    Wishlist-ul nu a putut fi găsit fiindcă nu sunteți logat. Intrați în cont.
+                </MaterialLink> 
+                </Paper>
                 
-                <Grid>
+                : (userData.wishlist === undefined) ? 
+
+                <Paper style={{ margin: "auto", width: 'auto', padding: '0', marginTop: 30,
+                background: 'transparent', overflow:'auto', maxWidth:'100%', textAlign: 'center' }} elevation={0}>
+                <MaterialLink style={{ fontSize: '25px'}} variant="String" underline="always">
+                    Wishlist-ul dumneavoastră nu conține nicio carte.
+                </MaterialLink> 
+                </Paper>
+
+                :
+            
+            <Paper style={{ margin: "auto", width: 'auto', padding: '0',
+                background: 'transparent', overflow:'auto', maxWidth:'100%', textAlign: 'center' }} elevation={0}>
+                
+
                 <Grid align="center" style={{ marginBottom:10, marginTop:20 }}>
-                    <Link style={{ fontSize:'25px' }} variant='string' underline='always' color='textPrimary'>Wishlist-ul meu</Link>
+                    <MaterialLink style={{ fontSize:'25px' }} variant='string' underline='always' color='textPrimary'>Wishlist-ul meu</MaterialLink>
                 </Grid>
-                <List>
 
-                    <ListItem>
-                <Grid container direction="row" justify="space-around" alignItems="center">
-                <Card className={classes.root} to="/add-book">
-                    <CardActionArea>
-                        <CardMedia className={classes.media} image="https://i.imgur.com/8zpua4U.jpg" title="2062. Lumea creata de inteligenta artificiala"></CardMedia>
-                        <CardContent>
-                            <Typography noWrap gutterBottom variant='body1' component="h2">
-                                2062. Lumea creata de inteligenta artificiala
-                            </Typography>
-                            <Typography noWrap variant="body2" color="textSecondary" component="p" style={{ marginBottom:'0px' }}>
-                            2062 este anul in care vom avea roboti la fel de inteligenti ca noi. Acest lucru este sustinut de majoritatea expertilor in domeniile inteligentei artificiale si roboticii. Dar cum va arata acest viitor? Cum se va desfasura viata pe aceasta planeta? Profesorul Toby Walsh analizeaza impactul pe care inteligenta artificiala il va avea asupra muncii, razboiului, politicii, economiei, vietii cotidiene si mortii. Pe baza unei intelegeri profunde a tehnologiei si a implicatiilor acesteia, 2062 descrie alegerile pe care trebuie sa le facem astazi, pentru a ne asigura ca viitorul va ramane luminos.
-                            </Typography>
-                        </CardContent>
-                    </CardActionArea>
+                <Grid container justify="space-evenly" alignItems="flex-start" direction="row" style={{ background:"transparent", width:"90%", margin:"auto" }}>
+
+                { data.map( (carte, index) => (
+
+                    <Grid item xs={2} key={index} style={{margin:"1.3vw"}}>
+
+                    <Card className={classes.root} style={{ margin: "auto" }}>
+
+                        <Link to = {{ pathname:'/view-book', state: { data: data[index] } }} className={classes.actions} color="primary">
+
+                        <CardActionArea style={{ maxWidth:"14vw", minWidth:"12vw" }}>
+                            <CardMedia className={classes.media} image={data[index].cover} title={data[index].title}></CardMedia>
+                                <CardContent>
+                                    <Typography gutterBottom color="textPrimary" variant='body1' align="center" component="h2" style={{ height:"5vw", fontSize:"1.1vw" }}>
+                                        {data[index].title}
+                                    </Typography>
+                                    <Typography noWrap variant="body2" component="p" style={{ color:"#335ebd", marginBottom:'0px', marginTop:"8px", fontSize:"0.97vw" }}>
+                                        {data[index].author}
+                                    </Typography>
+                                </CardContent>
+                        </CardActionArea>
+                        </Link>
                     <CardActions>
-                        <Button className={classes.actions} size="small" color="primary" variant="outlined" style={{ width:'100%' }}>Detalii</Button>
+                        <Button style={{ fontSize: "0.8vw", marginTop:"-10px" }} fullWidth aria-label="wishlist" color="secondary" variant="outlined"
+                            onClick={() => console.log(data) }>Nu o mai vreau</Button>
                     </CardActions>
                 </Card>
+
                 </Grid>
+                ))}
 
-                <Grid container justify="center">
-                <Card className={classes.root}>
-                    <CardActionArea>
-                        <CardMedia className={classes.media} image="https://i.imgur.com/9lvzdnT.jpg" title="Calatorie pe valuri de galaxii"></CardMedia>
-                        <CardContent>
-                            <Typography gutterBottom variant="body1" component="h2" noWrap>
-                            Calatorie pe valuri de galaxii
-                            </Typography>
-                            <Typography noWrap variant="body2" color="textSecondary" component="p" style={{ marginBottom:'0px' }}>
-                            Cosmografii, cei care alcătuiesc hărțile cosmosului, sunt adevărații exploratori ai zilelor noastre. Ei studiază structura universului, nașterea și evoluția galaxiilor, iar pe această cale a fost obținută în 2014 prima hartă dinamică a universului, cu zone vide și cu imense „continente“ extragalactice.
-                            </Typography>
-                        </CardContent>
-                    </CardActionArea>
-                    <CardActions>
-                    <Button className={classes.actions} size="small" color="primary" variant="outlined" style={{ width:'100%' }}>Detalii</Button>
-                    </CardActions>
-                </Card>
-                </Grid>
 
-                </ListItem>
-
-                </List>
                 </Grid>
 
             </Paper>
+
+            }
 
         </Grid>
     );

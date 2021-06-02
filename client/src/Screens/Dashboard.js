@@ -15,6 +15,7 @@ import IconButton from '@material-ui/core/IconButton';
 import axios from 'axios';
 import { Link, Redirect } from 'react-router-dom';
 import { useAuth } from './AuthContext/use-auth';
+import Settings from '@material-ui/icons/Settings';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 export default function Dashboard() {
@@ -55,13 +56,25 @@ export default function Dashboard() {
     const classes = useStyles();
 
     const url = 'http://localhost:3000/books/random';
+    const userUrl = 'http://localhost:3000/Users/currentUser'
 
     const [data,setData] = useState([]);
+    const [userData, setUser] = useState([]);
+
     useEffect(() => {
         axios.get(url, { withCredentials: true }).then( (res) => { 
             setData(res.data)
         }).catch( (e) => console.log(e) )
     },[])
+
+    useEffect(() => {
+        if (auth.user !== undefined) {
+            axios.get(userUrl, {withCredentials: true}).then( (res) => {
+                setUser(res.data);
+                //console.log(userData);
+            }).catch( (e) => console.log(e) ) 
+        }
+    }, [])
 
     const auth = useAuth();
 
@@ -71,6 +84,10 @@ export default function Dashboard() {
         <Grid>
             <AppBar position='static' style={{background: '#757de8', marginTop: 'auto', justifyContent:'center', flexDirection:'column', textAlign:'center'}}>
                 <Toolbar gutterbottom="true">
+                    { (auth.user === undefined && userData.isAdmin !== true) ? null : <Paper style={{ textAlign: "left" }}>
+                        <Button style={{ fontSize: "0.7vw"}} color="primary" variant="contained" 
+                            href="/dashboard" startIcon={<Settings />}>Panou admini</Button>
+                    </Paper>}
                     <Paper style={paperStyle} elevation={0}>
                         {/* <Button style={btnStyle} href="/reserve" variant="contained">Rezervă o carte</Button> */}
                         <Button href="/wishlist" style={btnStyle} variant="contained">Wishlist</Button>

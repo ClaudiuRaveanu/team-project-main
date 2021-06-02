@@ -159,7 +159,7 @@ export default function ViewBook() {
             <Paper elevation={book.reviews.length === 0 ? 0 : 5} style={{padding: '40px 40px', width: '50vw', margin: '40px auto', marginTop:0, flexDirection:'column', display: 'flex'}}>
                 <form>
                     {book.reviews.map( (carte, index) => (
-                    <Grid align="right" style={{ padding: '0px 0px', width:'100%', flexDirection:'column', display:'flex', marginBottom:0 }} key="index">
+                    <Grid align="right" style={{ padding: '0px 0px', width:'100%', flexDirection:'column', display:'flex', marginBottom:0 }} key={index}>
                         <TextField
                         id="outlined-multiline-static"
                         label={book.reviews[index].rv_title}
@@ -171,7 +171,7 @@ export default function ViewBook() {
                         fullWidth/>
                         <Typography style={{marginTop:'15', padding:'10px 10px', marginBottom:0}}>
                             <Icon><AccountCircle /></Icon>
-                            Postată de {book.reviews[index].anon ? 'Anonim' : auth.user} (notă oferită: {book.reviews[index].grade})
+                            Postată de {book.reviews[index].anon ? 'Anonim' : book.reviews[index].student_name} (notă oferită: {book.reviews[index].grade})
                         </Typography>
                     </Grid>
                     ))}

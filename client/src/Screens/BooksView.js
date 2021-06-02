@@ -1,4 +1,4 @@
-import {Grid, Typography, Paper, Toolbar, AppBar, List, ListItem, Fab } from '@material-ui/core';
+import {Grid, Typography, Paper, Toolbar, AppBar, List, ListItem, Fab, Snackbar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -16,6 +16,7 @@ import { useAuth } from './AuthContext/use-auth'
 
 const url = 'http://localhost:3000/Books'
 const userUrl = 'http://localhost:3000/Users/currentUser'
+const updateUser = 'http://localhost:3000/Users/update/'
 
 const BooksView = () => {
 
@@ -56,15 +57,14 @@ const BooksView = () => {
 
     const [access, setAccess] = useState(true);
 
+    const [redirect, setR] = useState(false);
+
+    const [open, setOpen] = useState(false);
+
     const [userData, setUser] = useState([]);
     var clicks = useState([]);
 
     const [booksNr, setNumber] = useState(0);
-
-    const [wish, setWish] = useState({
-        book_id: "",
-        student_id: ""
-    });
 
     useEffect(() => {
         axios.get('http://localhost:3000/Books/total', {withCredentials: true}).then((res) => {
@@ -83,29 +83,35 @@ const BooksView = () => {
     },[])
 
     useEffect(() => {
-        if (auth.user !== null) {
+        if (auth.user !== undefined) {
             axios.get(userUrl, {withCredentials: true}).then( (res) => {
                 setUser(res.data);
                 console.log(userData);
             }).catch( (e) => console.log(e) ) 
-        } else { setAccess(false) }
+        }
     }, [])
-
-    const preventDefault = (event) => event.preventDefault();
 
     for (var i = 0; i < booksNr; i++)
     {
         clicks.push({ clicked: 0 });
     }
 
-    const check = () => {
+    const check = (bk, index) => {
         if (auth.user === null || auth.user === undefined) {
-            setTimeout(<Redirect to="http://localhost:5000/login"></Redirect>, 2000);
-        } else {
-            // userData.wishlist.push(wish);
-            console.log(wish);
+            setOpen(true);
+            setTimeout(() => { setR(true) }, 3000);
+        } else if (!clicks[index].clicked) {
+            clicks[index].clicked = 1;
+            console.log("pressed");
+            userData.wishlist.push({ book_id: bk });
+            data[index - 2].stock -= 1;
+            axios.patch(url + '/update/' + bk, data[index - 2], { withCredentials: true }).then( (res) => { } ).catch( (e) => { console.log(e) });
+            axios.patch(updateUser + userData._id, userData, { withCredentials: true }).then( (res) => { } ).catch( (e) => { console.log(e) });
         }
     }
+
+    if (redirect)
+        return <Redirect to='/login'/>
     
     return (
         <Grid container>
@@ -118,7 +124,7 @@ const BooksView = () => {
                         {/* <Button href="/wishlist" style={btnStyle}>Wishlist</Button> */}
                         <Typography variant='h6' style={container}>Bibliotech UVT</Typography>
                         {/* <Button href="/add-book" style={btnStyle}>Adaugă carte</Button> */}
-                        <Button style={btnStyle} href="/book-a-book">Rezervă o carte</Button>
+                        <Button style={btnStyle} href="/reserve">Rezervă o carte</Button>
                     </Paper>
                 </Toolbar>
             </AppBar>
@@ -126,6 +132,11 @@ const BooksView = () => {
             
             <Paper style={{ margin: "auto", width: 'auto', padding: '0',
                 background: 'transparent', overflow:'auto', maxWidth:'100%', textAlign: 'center' }} elevation={0}>
+                    
+
+
+
+
                     
                 <Grid container justify="space-evenly" alignItems="flex-start" direction="row" style={{ background:"transparent", width:"90%", margin:"auto" }}>
 
@@ -140,21 +151,20 @@ const BooksView = () => {
                         <CardActionArea style={{ maxWidth:"14vw", minWidth:"12vw" }}>
                             <CardMedia className={classes.media} image={data[index].cover} title={data[index].title}></CardMedia>
                                 <CardContent>
-                                    <Typography gutterBottom color="textPrimary" variant='body1' align="center" component="h2" style={{ height:"3.2vw", fontSize:"0.91vw" }}>
+                                    <Typography gutterBottom color="textPrimary" variant='body1' align="center" component="h2" style={{ height:"5vw", fontSize:"1.1vw" }}>
                                     <u>{data[index].title}</u>
                                     </Typography>
-                                    <Typography noWrap variant="body2" component="p" style={{ color:"#335ebd", marginBottom:'0px', marginTop:"8px", fontSize:"0.82vw" }}>
+                                    <Typography noWrap variant="body2" component="p" style={{ color:"#335ebd", marginBottom:'0px', marginTop:"8px", fontSize:"0.97vw" }}>
                                     {data[index].author}
                                     </Typography>
                                 </CardContent>
                         </CardActionArea>
-                        </Link>
+                        </Link> 
                         <CardActions className={classes.actions}>
                             <Button style={{ fontSize: "0.67vw", marginTop:"-10px" }} aria-label="wishlist" 
                                 color={auth.user === undefined ? "secondary" : "primary"} variant="outlined"
-                                disabled={data[index].stock === 0 ? true : false}
-                                onClick={() => { check(); setWish({ ...wish, book_id: data[index]._id });
-                                    setWish({ ...wish, student_id: (auth.user === undefined ? "anonim" : userData._id) }); }}>
+                                disabled={data[index].stock === 0 ? true : ((clicks !== undefined && clicks[index + 2].clicked === 1) ? true : false)}
+                                onClick={() => { check(data[index]._id, index + 2); }}>
                                     {data[index].stock === 0 ? 'stoc insuficient' : 'adaugă în wishlist'}
                             </Button>
                         </CardActions>
@@ -165,6 +175,8 @@ const BooksView = () => {
                     
                 ))
                 }
+
+                <Snackbar open={open} message="Nu sunteți logat. Redirecționare..."></Snackbar>
 
                 </Grid>
 

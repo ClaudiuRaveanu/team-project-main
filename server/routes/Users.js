@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const User = require('../models/Users');
+const Book = require('../models/Books');
 const passportLocal = require('passport-local');
 const passport = require('passport');
 
@@ -73,7 +74,7 @@ router.post('/register', async (req,res) => {
 );
 
 router.post('/login',passport.authenticate('local'), (req,res) => {
-    res.send(req.user);
+    res.send(req.user); 
 })
 
 router.get('/user', (req,res) => {
@@ -81,9 +82,33 @@ router.get('/user', (req,res) => {
 })
 
 router.get('/currentUser', async (req, res) => {
-  const account = await User.findOne({ username: req.user.username });
+  if (req.user !== undefined) {
+    const account = await User.findOne({ username: req.user.username }); 
 
-  res.json(account);
+    res.json(account)
+  } else res.json(undefined);
+})
+
+router.patch('/update/:id', async (req, res) => {
+    const account = await User.updateOne({ _id: req.params.id }, { $set: req.body });
+
+    res.json(account)
+})
+
+router.get('/wishlist/:id', async (req, res) => {
+  const wishes = await User.findOne({ _id: req.params.id }, { wishlist: 1, _id: 0 });
+
+  let books = [];
+
+  //console.log(wishes.wishlist.length);
+
+  for (let i = 0; i < wishes.wishlist.length; i++) {
+    let b = await Book.findOne({ _id: wishes.wishlist[i].book_id }); 
+    //console.log(b);
+    books.push(b);
+  }
+
+  res.json(books);
 })
 
 router.get("/logout", (req, res) => {

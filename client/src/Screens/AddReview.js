@@ -81,7 +81,8 @@ export default function AddReview(props) {
         rv_title: "",
         grade: "",
         opinion: "",
-        anon: true
+        anon: true,
+        student_name: (auth.user === undefined ? "Anonim" : auth.user)
     });
 
     const handleChange = (event) => {
@@ -89,7 +90,7 @@ export default function AddReview(props) {
         // console.log(`checkBox changed from: ${review.anon} to ${!review.anon}`);
     };
 
-    if (auth.user === null) review.anon = true;
+    if (auth.user === undefined) review.anon = true;
 
     const [open, setOpen] = useState(false);
 
@@ -177,7 +178,7 @@ export default function AddReview(props) {
                             
                             <FormControlLabel
                             control={
-                            <Checkbox disabled={ auth.user === null ? false : true}
+                            <Checkbox disabled={ auth.user === undefined ? true : false}
                                 checked={review.anon}
                                 onChange={handleChange}
                                 name="checkedB"
@@ -201,7 +202,7 @@ export default function AddReview(props) {
                     <Grid align="center" style={{ marginTop:30, marginBottom:0 }}>
                             <Button onClick={() => { setTimeout(() => {setOpen(true);}, 500)
                             if (review.opinion !== "" && review.rv_title !== "" && review.grade !== "")
-                                { setTimeout(() => { console.log("review is ok"); redirect(); }, 3000);}
+                                { setTimeout(() => { console.log("review is ok"); postReview(); redirect(); }, 3000);}
                             else { setTimeout(() => { setOpen(false); }, 5000); }
                             }}
                             style={{ width:'35%'}} color='primary' variant="contained">Adaugă recenzie</Button>

@@ -5,7 +5,8 @@ const ReviewSchema = new mongoose.Schema({
     rv_title: {type: String, required: true},
     opinion: {type: String, required: true},
     grade: {type: Number, required: true},
-    anon: {type: Boolean, required: true}
+    anon: {type: Boolean, required: true},
+    student_name: {type:String}
 });
 
 const BookSchema = new mongoose.Schema({

@@ -40,6 +40,8 @@ const RegisterScreen = () => {
 
     const [errorMsg,setError] = React.useState("");
 
+    const [redirect, setR] = React.useState(false);
+
     const [open, setOpen] = React.useState(false);
 
     const handleClose = () => {
@@ -58,6 +60,9 @@ const RegisterScreen = () => {
                 setTimeout(<Redirect to="/login"></Redirect>, 3000)
             }} ).catch( (e) => {console.log(e);});
     }
+
+    if (redirect)
+        return <Redirect to='/login'/>
 
     return(
         <Grid>
@@ -186,7 +191,7 @@ const RegisterScreen = () => {
                     else if (user.phone_nr.length < 12 )
                         { setError("Număr de telefon invalid"); }
                     else
-                        { postUser(); }
+                        { postUser(); setTimeout(() => { setR(true) }, 3000); }
                     }} color='primary'>Trimite</Button>
 
                 <Snackbar open={open} onClose={handleClose} message={errorMsg}></Snackbar>

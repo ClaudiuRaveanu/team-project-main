@@ -30,7 +30,7 @@ const PrivateRoute = ( {children , ...rest} ) => {
 
   return(
     <Route { ...rest} render={() => {
-      return auth.user === null ? <Redirect to='/login'/> : children
+      return auth.user === undefined ? <Redirect to='/login'/> : children
 
     }}/>
   );
@@ -56,9 +56,9 @@ const Navbar = (props) => {
               <LoginPage />
             </Route>
 
-            <Route path="/reserve">
+            <PrivateRoute path="/reserve">
                 <BookReserve/>
-            </Route>
+            </PrivateRoute>
             <Route path='/add-book'>
                 <AddBook />
             </Route>
