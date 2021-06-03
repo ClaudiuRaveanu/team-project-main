@@ -104,6 +104,7 @@ router.get('/getUsers', async (req,res) => {
 })
 
 router.get('/wishlist', async (req, res) => {
+  if (req.user !== undefined) {
   const wishes = await User.findOne({ username: req.user.username }, { wishlist: 1 });
 
   let books = []; 
@@ -117,6 +118,7 @@ router.get('/wishlist', async (req, res) => {
   }
 
   res.json(books);
+  }
 })
 
 // DELETE wishlist
