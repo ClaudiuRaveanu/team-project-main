@@ -157,6 +157,7 @@ export default function BookReserve() {
                             console.log(reserve)
                             userData.reservations.push(reserve);
                             axios.patch(updateUser + userData._id, userData, { withCredentials: true }).then( (res) => { } ).catch( (e) => { console.log(e) });
+                            window.location.reload();
                         } }>
                             Rezervă cartea
                         </Button>
