@@ -60,7 +60,6 @@ const Home = () => {
                 <Typography variant="h6" className={classes.title}>
                     Staff panel
                 </Typography>
-                <button onClick = {() => history.push('/login')}>LogIn</button>
             </AppBar>
             
             
