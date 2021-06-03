@@ -176,7 +176,7 @@ export default function ViewWishlist() {
                                 userData.wishlist?.splice(index);
                                 handleDeleteReview(request);
                                 window.location.reload();
-                                //axios.patch(updateUser + wishBooks[index]._id, userData, { withCredentials: true }).then( (res) => { console.log(res) } ).catch( (e) => { console.log(e) });
+                                axios.patch(updateUser + wishBooks[index]._id, userData, { withCredentials: true }).then( (res) => { console.log(res) } ).catch( (e) => { console.log(e) });
                             } }>Nu o mai vreau</Button>
                     </CardActions>
                 </Card>
